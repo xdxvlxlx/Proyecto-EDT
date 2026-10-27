@@ -10,11 +10,11 @@ package ProyectoEDT;
  */
 public class Nodo <T> {
     private T info; 
-    private Nodo<T> Next;
+    private Nodo<T> next;
 
     public Nodo(T info) {
         this.info = info;
-        this.Next = null;
+        this.next = null;
     }
 
     /**
@@ -35,14 +35,14 @@ public class Nodo <T> {
      * @return the Next
      */
     public Nodo<T> getNext() {
-        return Next;
+        return next;
     }
 
     /**
      * @param Next the Next to set
      */
     public void setNext(Nodo<T> Next) {
-        this.Next = Next;
+        this.next = next;
     }
 
 }

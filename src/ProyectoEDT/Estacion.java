@@ -27,5 +27,11 @@ public class Estacion {
         this.PrimerAdyacente = null;
     }
     
+    public String getNombreEstacion() {
+        return this.Nombre;
+    }
     
+    public String getID_Estacion() {
+        return this.ID_Estacion;
+    }
 }

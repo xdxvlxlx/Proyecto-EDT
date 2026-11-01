@@ -15,7 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class GestorArchivo {
     
-    public void GestorArchivo() {
+    public void CargarEstacion() { //Solo para cargar .csv de 5 filas, el mismo formato que contiene el dataset Estacion
         JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         j.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter restrict = new FileNameExtensionFilter("Solo archivos .csv", "csv");
@@ -26,7 +26,8 @@ public class GestorArchivo {
             try {
                 BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
                 String linea = lector.readLine();
-                System.out.println(linea);
+                String encabezado[] = linea.split(",");
+                System.out.println(encabezado[0]+"\t"+encabezado[1]+"\t"+encabezado[2]+"\t"+encabezado[3]+"\t"+encabezado[4]);
                 while ((linea = lector.readLine()) != null) {
                     String palabra[] = linea.split(",");
                     System.out.println(palabra[0]+"\t"+palabra[1]+"\t"+palabra[2]+"\t"+palabra[3]+"\t"+palabra[4]);
@@ -41,6 +42,8 @@ public class GestorArchivo {
                     System.out.println("A ocurrido un error: " + e.getMessage());
             }
         }
-    }    
+    }
+
+
 }
 

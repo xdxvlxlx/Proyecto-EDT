@@ -36,32 +36,34 @@ public class GUI1 extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        loadCsv.setText("cargar csv");
+        loadCsv.setText("cargar Estaciones");
         loadCsv.addActionListener(this::loadCsvActionPerformed);
-        jPanel1.add(loadCsv, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, -1, -1));
+        jPanel1.add(loadCsv, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Rubik", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 160, 180, 120));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 210, 510, 380));
 
         jButton1.setText("imprimir tabla hash");
         jButton1.addActionListener(this::jButton1ActionPerformed);
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 130, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
         );
 
         pack();
@@ -69,15 +71,38 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void loadCsvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadCsvActionPerformed
         GestorArchivo g = new GestorArchivo();
-        g.GestorArchivo();
+        g.CargarEstacion();
+        String texto = "Se ha cargado el dataset de Estaciones";
+        jTextArea1.setText(texto);
     }//GEN-LAST:event_loadCsvActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String texto = "";
-        for (int i = 0; i < hashTable.getHashTable().length; i++) {
-            texto = hashTable.getHashTable()[i].toString();
+        if (hashTable.esVacia()) {
+            String texto = "La Tabla Hash esta Vacia";
             jTextArea1.setText(texto);
+        } else {
+        String texto = "Valores de la Tabla Hash\n";
+        for (int i = 0; i < hashTable.getHashTable().length; i++) {
+            Object miObjeto = hashTable.getHashTable()[i];
+            if (miObjeto instanceof Estacion) {
+                Estacion miEstacion = (Estacion) miObjeto;
+                texto += "\n["+i+"] "+miEstacion.getNombreEstacion();
+            } else if (miObjeto instanceof Nodo) {
+                Nodo miNodo = (Nodo) miObjeto;
+                String linea = "";
+                while (miNodo != null) {
+                    linea += miNodo.getEstacion().getNombreEstacion()+" -> ";
+                    miNodo = miNodo.getNext();
+                }
+                linea += "null";
+                texto += "\n["+i+"] ";
+                texto += linea;
+            } else if (miObjeto == null) {
+                texto += "\n["+i+"] null";
+            }
+            jTextArea1.setText(texto);
+        }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

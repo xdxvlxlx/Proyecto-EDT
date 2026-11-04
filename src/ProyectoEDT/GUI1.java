@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package ProyectoEDT;
+import java.io.File;
 /**
  *
  * @author daviel
@@ -34,9 +35,9 @@ public class GUI1 extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
+        loadgraph = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -55,6 +56,11 @@ public class GUI1 extends javax.swing.JFrame {
         jButton1.addActionListener(this::jButton1ActionPerformed);
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, -1, -1));
 
+        loadgraph.setText("cargar Grafo");
+        loadgraph.setToolTipText("");
+        loadgraph.addActionListener(this::loadgraphActionPerformed);
+        jPanel1.add(loadgraph, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -71,8 +77,14 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void loadCsvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadCsvActionPerformed
         GestorArchivo g = new GestorArchivo();
-        g.CargarEstacion();
-        String texto = "Se ha cargado el dataset de Estaciones";
+        String texto = "";
+        File dict_estaciones = g.CargarArchivo();
+        if (dict_estaciones == null) {
+            texto = "Se ha cancelado la carga del dataset de Estaciones";
+        } else {
+            g.CargarEstacion(dict_estaciones);
+            texto = "Se ha cargado el dataset de Estaciones";
+        }
         jTextArea1.setText(texto);
     }//GEN-LAST:event_loadCsvActionPerformed
 
@@ -106,6 +118,20 @@ public class GUI1 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void loadgraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgraphActionPerformed
+        // TODO add your handling code here:
+        GestorArchivo g = new GestorArchivo();
+        String texto = "";
+        File grafo = g.CargarArchivo();
+        if (grafo == null) {
+            texto = "Se ha cancelado la carga del archivo grafo";
+        } else {
+            g.CargarGrafo(grafo);
+            texto = "Se ha cargado el archivo grafo";
+        }
+        jTextArea1.setText(texto);
+    }//GEN-LAST:event_loadgraphActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -137,5 +163,6 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton loadCsv;
+    private javax.swing.JButton loadgraph;
     // End of variables declaration//GEN-END:variables
 }

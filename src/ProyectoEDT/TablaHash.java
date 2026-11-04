@@ -81,5 +81,7 @@ public class TablaHash {
         
     }
     
-    
+    public Object getValue(int x) { //El valor es el objeto estacion o lista enlazada (en caso de haber colision) que se encuentra en la posicion x de la tabla
+        return this.hashTable[x];
+    }
 }

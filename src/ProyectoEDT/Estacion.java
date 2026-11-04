@@ -34,4 +34,9 @@ public class Estacion {
     public String getID_Estacion() {
         return this.ID_Estacion;
     }
+    
+    public NodoAdyacente getPrimerAdyacente() {
+        return this.PrimerAdyacente;
+    }
+    
 }

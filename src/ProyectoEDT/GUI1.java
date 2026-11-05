@@ -36,6 +36,7 @@ public class GUI1 extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
         loadgraph = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,6 +62,10 @@ public class GUI1 extends javax.swing.JFrame {
         loadgraph.addActionListener(this::loadgraphActionPerformed);
         jPanel1.add(loadgraph, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
 
+        jButton2.setText("imprimir grafo");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 50, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -82,8 +87,8 @@ public class GUI1 extends javax.swing.JFrame {
         if (dict_estaciones == null) {
             texto = "Se ha cancelado la carga del dataset de Estaciones";
         } else {
-            g.CargarEstacion(dict_estaciones);
-            texto = "Se ha cargado el dataset de Estaciones";
+            texto = g.LeerEstacion(dict_estaciones);
+            //texto = "Se ha cargado el dataset de Estaciones";
         }
         jTextArea1.setText(texto);
     }//GEN-LAST:event_loadCsvActionPerformed
@@ -126,11 +131,15 @@ public class GUI1 extends javax.swing.JFrame {
         if (grafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
         } else {
-            g.CargarGrafo(grafo);
+            g.LeerGrafo(grafo);
             texto = "Se ha cargado el archivo grafo";
         }
         jTextArea1.setText(texto);
     }//GEN-LAST:event_loadgraphActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -159,6 +168,7 @@ public class GUI1 extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;

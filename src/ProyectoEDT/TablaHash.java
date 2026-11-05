@@ -84,4 +84,16 @@ public class TablaHash {
     public Object getValue(int x) { //El valor es el objeto estacion o lista enlazada (en caso de haber colision) que se encuentra en la posicion x de la tabla
         return this.hashTable[x];
     }
+    
+    public Estacion buscarEstacion(Nodo nodo, String value) { //buscar estacion en los nodos encadenados mediante el valor ID
+        Estacion estacion = null;
+        while (nodo != null) {
+            if (value.equals(nodo.getEstacion().getID_Estacion())) {
+                estacion = nodo.getEstacion();
+                break;
+            }
+            nodo = nodo.getNext();
+        }
+        return estacion;
+    }
 }

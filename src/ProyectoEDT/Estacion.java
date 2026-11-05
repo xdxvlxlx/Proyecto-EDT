@@ -39,4 +39,7 @@ public class Estacion {
         return this.PrimerAdyacente;
     }
     
+    public void setPrimerAdyacente(NodoAdyacente PrimerAdyacente) {
+        this.PrimerAdyacente = PrimerAdyacente;
+    }
 }

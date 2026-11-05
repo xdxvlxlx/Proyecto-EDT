@@ -28,8 +28,9 @@ public class GestorArchivo {
         }
         return archivo;
     }
-    public void CargarEstacion(File archivo) { //Solo para cargar .csv de 5 filas, el mismo formato que contiene el dataset Estacion
+    public String LeerEstacion(File archivo) { //Solo para leer .csv de 5 filas, el mismo formato que contiene el dataset Estacion
         //archivo = j.getSelectedFile(); 
+        String message = "";
         try {
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
             String linea = lector.readLine();
@@ -45,10 +46,15 @@ public class GestorArchivo {
             }
         } catch (Exception e) {
                 System.out.println("A ocurrido un error: " + e.getMessage());
+                message = "A ocurrido un error: " + e.getMessage();
         }
+        if (message.equals("")) {
+            message = "Se ha cargado el dataset de Estaciones";
+        } 
+        return message;
     }
     
-    public void CargarGrafo(File archivo) { //Solo para cargar .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo
+    public void LeerGrafo(File archivo) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo
         try {
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
             String linea = lector.readLine();
@@ -57,34 +63,21 @@ public class GestorArchivo {
             while ((linea = lector.readLine()) != null) {
                 String palabra[] = linea.split(",");
                 System.out.println(palabra[0]+"\t"+palabra[1]+"\t"+palabra[2]);
-                for (int i = 0; i < GUI1.hashTable.getHashTable().length; i++) {
-                    Object ID = GUI1.hashTable.getValue(i);
-                    if (ID instanceof Nodo) {
-                        Nodo IDs = (Nodo) ID;
-                        while (IDs != null) {
-                            if (palabra[0].equals(IDs)) {
-                                //hace algo
-                                
-                                break;
-                            }
-                            IDs = IDs.getNext();
-                        }
-                    } else if (ID instanceof Estacion) {
-                        Estacion IDe = (Estacion) ID;
-                        if (palabra[0].equals(IDe.getID_Estacion())) {
-                            //IDe.getPrimerAdyacente() = NodoAdyacente();
-                            //Primer ejemplo: estoy en PRO, le debo asignar adyacente la estacion PER, peso de 2 y el siguiente adyacente
-                            //problema: buscar la estacion PER en la tabla hash, implica recorrer la tabla y comprobar si la clave contiene la estacion deseada
-                            //
-                            
-                        }
-                    }
+                //for (int i = 0; i < GUI1.hashTable.getHashTable().length; i++) {
+                int key_origen = GUI1.hashTable.getHashCode(palabra[0]);
+                int key_destino = GUI1.hashTable.getHashCode(palabra[1]);
+                Object estacion_origen = GUI1.hashTable.getValue(key_origen);
+                Object estacion_destino = GUI1.hashTable.getValue(key_destino);
+                if (estacion_origen instanceof Nodo) {
+                    estacion_origen = GUI1.hashTable.buscarEstacion((Nodo) estacion_origen, palabra[0]);
+                if (estacion_destino instanceof Nodo) {
+                    estacion_destino = GUI1.hashTable.buscarEstacion((Nodo) estacion_destino, palabra[1]);
+                } if (estacion_origen instanceof Estacion) {
+                    NodoAdyacente adyacente = new NodoAdyacente((Estacion) estacion_destino, Integer.parseInt(palabra[2]));
+                    ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
+                } 
                 }
-            }
-                
-                //Estacion nuevaEstacion = new Estacion(palabra[0], palabra[1], Integer.parseInt(palabra[2]));
-                //int hashcode = GUI1.hashTable.getHashCode(palabra[1]);
-                //GUI1.hashTable.insertar(nuevaEstacion, hashcode);
+            }        
         } catch (Exception e) {
                 System.out.println("A ocurrido un error: " + e.getMessage());
         }

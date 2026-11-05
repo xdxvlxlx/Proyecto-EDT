@@ -47,20 +47,24 @@ public class GestorArchivo {
         } catch (Exception e) {
                 System.out.println("A ocurrido un error: " + e.getMessage());
                 message = "A ocurrido un error: " + e.getMessage();
-        }
-        if (message.equals("")) {
+        } if (message.equals("")) {
             message = "Se ha cargado el dataset de Estaciones";
         } 
         return message;
     }
     
-    public void LeerGrafo(File archivo) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo
+    public String LeerGrafo(File archivo) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo
+        String message = "";
         try {
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
             String linea = lector.readLine();
             String encabezado[] = linea.split(",");
             System.out.println(encabezado[0]+"\t"+encabezado[1]+"\t"+encabezado[2]);
             while ((linea = lector.readLine()) != null) {
+                if (GUI1.hashTable.esVacia()) {
+                    message = "no se puede cargar grafo porque el diccionario de estaciones no se ha cargado";
+                    break;
+                }
                 String palabra[] = linea.split(",");
                 System.out.println(palabra[0]+"\t"+palabra[1]+"\t"+palabra[2]);
                 //for (int i = 0; i < GUI1.hashTable.getHashTable().length; i++) {
@@ -70,17 +74,21 @@ public class GestorArchivo {
                 Object estacion_destino = GUI1.hashTable.getValue(key_destino);
                 if (estacion_origen instanceof Nodo) {
                     estacion_origen = GUI1.hashTable.buscarEstacion((Nodo) estacion_origen, palabra[0]);
-                if (estacion_destino instanceof Nodo) {
+                } if (estacion_destino instanceof Nodo) {
                     estacion_destino = GUI1.hashTable.buscarEstacion((Nodo) estacion_destino, palabra[1]);
                 } if (estacion_origen instanceof Estacion) {
                     NodoAdyacente adyacente = new NodoAdyacente((Estacion) estacion_destino, Integer.parseInt(palabra[2]));
+                    System.out.println("Estacion: "+((Estacion) estacion_origen).getNombreEstacion()+" es adyacente a "+((Estacion)estacion_destino).getNombreEstacion()+" con un peso de "+palabra[2]);
                     ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
                 } 
-                }
             }        
         } catch (Exception e) {
                 System.out.println("A ocurrido un error: " + e.getMessage());
-        }
+                message = "A ocurrido un error: " + e.getMessage();
+        } if (message.equals("")) {
+            message = "Se ha cargado el archivo grafo";
+        } 
+        return message;
     }
 }
    

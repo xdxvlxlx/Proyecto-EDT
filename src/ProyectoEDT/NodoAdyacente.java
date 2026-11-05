@@ -18,4 +18,8 @@ public class NodoAdyacente {
         this.Tiempo_Minutos = Tiempo_Minutos;
         this.SiguienteAdyacente = null;
     }
+    
+    public Estacion getEstacionDestino() {
+        return this.Estacion_Destino;
+    }
 }

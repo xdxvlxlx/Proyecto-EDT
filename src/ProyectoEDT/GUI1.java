@@ -31,20 +31,20 @@ public class GUI1 extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        loadCsv = new javax.swing.JButton();
+        loadEstaciones = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
-        loadgraph = new javax.swing.JButton();
+        loadgrafo = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        loadCsv.setText("cargar Estaciones");
-        loadCsv.addActionListener(this::loadCsvActionPerformed);
-        jPanel1.add(loadCsv, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+        loadEstaciones.setText("cargar Estaciones");
+        loadEstaciones.addActionListener(this::loadEstacionesActionPerformed);
+        jPanel1.add(loadEstaciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Rubik", 0, 14)); // NOI18N
@@ -57,10 +57,10 @@ public class GUI1 extends javax.swing.JFrame {
         jButton1.addActionListener(this::jButton1ActionPerformed);
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, -1, -1));
 
-        loadgraph.setText("cargar Grafo");
-        loadgraph.setToolTipText("");
-        loadgraph.addActionListener(this::loadgraphActionPerformed);
-        jPanel1.add(loadgraph, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
+        loadgrafo.setText("cargar Grafo");
+        loadgrafo.setToolTipText("");
+        loadgrafo.addActionListener(this::loadgrafoActionPerformed);
+        jPanel1.add(loadgrafo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
 
         jButton2.setText("imprimir grafo");
         jButton2.addActionListener(this::jButton2ActionPerformed);
@@ -80,7 +80,7 @@ public class GUI1 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loadCsvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadCsvActionPerformed
+    private void loadEstacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadEstacionesActionPerformed
         GestorArchivo g = new GestorArchivo();
         String texto = "";
         File dict_estaciones = g.CargarArchivo();
@@ -91,7 +91,7 @@ public class GUI1 extends javax.swing.JFrame {
             //texto = "Se ha cargado el dataset de Estaciones";
         }
         jTextArea1.setText(texto);
-    }//GEN-LAST:event_loadCsvActionPerformed
+    }//GEN-LAST:event_loadEstacionesActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
@@ -103,14 +103,13 @@ public class GUI1 extends javax.swing.JFrame {
         for (int i = 0; i < hashTable.getHashTable().length; i++) {
             Object miObjeto = hashTable.getHashTable()[i];
             if (miObjeto instanceof Estacion) {
-                Estacion miEstacion = (Estacion) miObjeto;
-                texto += "\n["+i+"] "+miEstacion.getNombreEstacion();
+                texto += "\n["+i+"] "+((Estacion)miObjeto).getNombreEstacion();
             } else if (miObjeto instanceof Nodo) {
-                Nodo miNodo = (Nodo) miObjeto;
+                miObjeto = (Nodo) miObjeto;
                 String linea = "";
-                while (miNodo != null) {
-                    linea += miNodo.getEstacion().getNombreEstacion()+" -> ";
-                    miNodo = miNodo.getNext();
+                while (miObjeto != null) {
+                    linea += ((Nodo) miObjeto).getEstacion().getNombreEstacion()+" -> ";
+                    miObjeto = ((Nodo) miObjeto).getNext();
                 }
                 linea += "null";
                 texto += "\n["+i+"] ";
@@ -123,22 +122,22 @@ public class GUI1 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void loadgraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgraphActionPerformed
-        // TODO add your handling code here:
+    private void loadgrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgrafoActionPerformed
         GestorArchivo g = new GestorArchivo();
         String texto = "";
         File grafo = g.CargarArchivo();
         if (grafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
         } else {
-            g.LeerGrafo(grafo);
-            texto = "Se ha cargado el archivo grafo";
+            texto = g.LeerGrafo(grafo);
         }
         jTextArea1.setText(texto);
-    }//GEN-LAST:event_loadgraphActionPerformed
+    }//GEN-LAST:event_loadgrafoActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        String texto = "aun no sirve xd";
+        jTextArea1.setText(texto);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -172,7 +171,7 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JButton loadCsv;
-    private javax.swing.JButton loadgraph;
+    private javax.swing.JButton loadEstaciones;
+    private javax.swing.JButton loadgrafo;
     // End of variables declaration//GEN-END:variables
 }

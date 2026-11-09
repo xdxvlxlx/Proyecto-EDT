@@ -22,4 +22,8 @@ public class NodoAdyacente {
     public Estacion getEstacionDestino() {
         return this.Estacion_Destino;
     }
+    
+    public void setSiguienteAdyacente(NodoAdyacente SiguienteAdyacente) {
+        this.SiguienteAdyacente = SiguienteAdyacente;
+    }
 }

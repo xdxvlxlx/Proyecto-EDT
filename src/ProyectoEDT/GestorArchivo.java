@@ -28,7 +28,7 @@ public class GestorArchivo {
         }
         return archivo;
     }
-    public String LeerEstacion(File archivo) { //Solo para leer .csv de 5 filas, el mismo formato que contiene el dataset Estacion
+    public String LeerEstacion(File archivo, TablaHash hashTable) { //Solo para leer .csv de 5 filas, el mismo formato que contiene el dataset Estacion
         //archivo = j.getSelectedFile(); 
         String message = "";
         try {
@@ -41,8 +41,8 @@ public class GestorArchivo {
                 System.out.println(palabra[0]+"\t"+palabra[1]+"\t"+palabra[2]+"\t"+palabra[3]+"\t"+palabra[4]);
                 //Crea nueva instancia de la clase estacion
                 Estacion nuevaEstacion = new Estacion(palabra[0], palabra[1], palabra[2], palabra[3], Integer.parseInt(palabra[4]));
-                int hashcode = GUI1.hashTable.getHashCode(palabra[0]); //palabra[0] calcula el hascode con el ID, palabra[1] calcula el hashcode con el nombre
-                GUI1.hashTable.insertar(nuevaEstacion, hashcode);
+                int hashcode = hashTable.getHashCode(palabra[0]); //palabra[0] calcula el hascode con el ID, palabra[1] calcula el hashcode con el nombre
+                hashTable.insertar(nuevaEstacion, hashcode);
             }
         } catch (Exception e) {
                 System.out.println("A ocurrido un error: " + e.getMessage());
@@ -53,7 +53,7 @@ public class GestorArchivo {
         return message;
     }
     
-    public String LeerGrafo(File archivo) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo
+    public String LeerGrafo(File archivo, TablaHash hashTable) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo
         String message = "";
         try {
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
@@ -61,25 +61,32 @@ public class GestorArchivo {
             String encabezado[] = linea.split(",");
             System.out.println(encabezado[0]+"\t"+encabezado[1]+"\t"+encabezado[2]);
             while ((linea = lector.readLine()) != null) {
-                if (GUI1.hashTable.esVacia()) {
+                if (hashTable.esVacia()) {
                     message = "no se puede cargar grafo porque el diccionario de estaciones no se ha cargado";
                     break;
                 }
                 String palabra[] = linea.split(",");
                 System.out.println(palabra[0]+"\t"+palabra[1]+"\t"+palabra[2]);
                 //for (int i = 0; i < GUI1.hashTable.getHashTable().length; i++) {
-                int key_origen = GUI1.hashTable.getHashCode(palabra[0]);
-                int key_destino = GUI1.hashTable.getHashCode(palabra[1]);
-                Object estacion_origen = GUI1.hashTable.getValue(key_origen);
-                Object estacion_destino = GUI1.hashTable.getValue(key_destino);
+                int key_origen = hashTable.getHashCode(palabra[0]);
+                int key_destino = hashTable.getHashCode(palabra[1]);
+                Object estacion_origen = hashTable.getValue(key_origen);
+                Object estacion_destino = hashTable.getValue(key_destino);
                 if (estacion_origen instanceof Nodo) {
-                    estacion_origen = GUI1.hashTable.buscarEstacion((Nodo) estacion_origen, palabra[0]);
+                    estacion_origen = hashTable.buscarEstacion((Nodo) estacion_origen, palabra[0]);
                 } if (estacion_destino instanceof Nodo) {
-                    estacion_destino = GUI1.hashTable.buscarEstacion((Nodo) estacion_destino, palabra[1]);
+                    estacion_destino = hashTable.buscarEstacion((Nodo) estacion_destino, palabra[1]);
                 } if (estacion_origen instanceof Estacion) {
                     NodoAdyacente adyacente = new NodoAdyacente((Estacion) estacion_destino, Integer.parseInt(palabra[2]));
-                    System.out.println("Estacion: "+((Estacion) estacion_origen).getNombreEstacion()+" es adyacente a "+((Estacion)estacion_destino).getNombreEstacion()+" con un peso de "+palabra[2]);
-                    ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
+                    System.out.println("Estacion: "+((Estacion) estacion_origen).getNombreEstacion()+" tiene adyacente a "+((Estacion)estacion_destino).getNombreEstacion()+" con un peso de "+palabra[2]);
+                    if (((Estacion) estacion_destino).getPrimerAdyacente() != null) {
+                        NodoAdyacente SiguienteAdyacente = new NodoAdyacente((Estacion) estacion_origen, Integer.parseInt(palabra[2]));
+                        ((Estacion) estacion_destino).getPrimerAdyacente().setSiguienteAdyacente(SiguienteAdyacente);
+                        System.out.println("La estacion destino "+((Estacion) estacion_destino).getNombreEstacion()+" contiene un primer adyacente que es "+((Estacion)estacion_destino).getPrimerAdyacente().getEstacionDestino().getNombreEstacion()+ ". por lo que se asigna al siguiente despues del primero");    
+                        ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
+                    } else {
+                        ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
+                    }
                 } 
             }        
         } catch (Exception e) {

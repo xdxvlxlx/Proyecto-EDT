@@ -11,9 +11,8 @@ import java.io.File;
 public class GUI1 extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GUI1.class.getName());
-
-    //Instancia un objeto de la clase TablaHash, public static para trabajarla en otras clases
-    public static TablaHash hashTable = new TablaHash();    
+  
+    TablaHash hashTable = new TablaHash();  
     /**
      * Creates new form GUI1
      */
@@ -62,7 +61,8 @@ public class GUI1 extends javax.swing.JFrame {
         loadgrafo.addActionListener(this::loadgrafoActionPerformed);
         jPanel1.add(loadgrafo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
 
-        jButton2.setText("imprimir grafo");
+        jButton2.setText("mostrar grafo");
+        jButton2.setToolTipText("");
         jButton2.addActionListener(this::jButton2ActionPerformed);
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 50, -1, -1));
 
@@ -87,7 +87,7 @@ public class GUI1 extends javax.swing.JFrame {
         if (dict_estaciones == null) {
             texto = "Se ha cancelado la carga del dataset de Estaciones";
         } else {
-            texto = g.LeerEstacion(dict_estaciones);
+            texto = g.LeerEstacion(dict_estaciones, hashTable);
             //texto = "Se ha cargado el dataset de Estaciones";
         }
         jTextArea1.setText(texto);
@@ -129,15 +129,15 @@ public class GUI1 extends javax.swing.JFrame {
         if (grafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
         } else {
-            texto = g.LeerGrafo(grafo);
+            texto = g.LeerGrafo(grafo, hashTable);
         }
         jTextArea1.setText(texto);
     }//GEN-LAST:event_loadgrafoActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        String texto = "aun no sirve xd";
-        jTextArea1.setText(texto);
+        Grafo grafo = new Grafo();
+        grafo.registrarNodosEnGrafo(hashTable);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

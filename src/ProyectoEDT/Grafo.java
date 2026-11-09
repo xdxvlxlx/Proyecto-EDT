@@ -5,6 +5,7 @@
 package ProyectoEDT;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.graph.Edge;
 
 /**
  *
@@ -12,43 +13,34 @@ import org.graphstream.graph.implementations.SingleGraph;
  */
 public class Grafo {
     
-    public void registrarNodosEnGrafo(TablaHash hashTable) {
-    // 1. Activar el motor gráfico de Swing
+    public Graph registrarNodosEnGrafo(Graph grafoVisual, String estacion_origen, String estacion_destino, int tiempo_minutos) {
     System.setProperty("org.graphstream.ui", "swing");
+    //Graph grafoVisual = new SingleGraph("UrbanRoute");
+    String idOrigen = estacion_origen;   // Nodo que ya existe
+    String idDestino = estacion_destino;  // Nodo nuevo que vas a conectar
+    String idArista = idOrigen + "-" + idDestino;
 
-    // 2. Crear el grafo visual
-    Graph grafoVisual = new SingleGraph("UrbanRoute");
-    
-    // 3. Recorrer la Tabla Hash completa (del 0 al tamaño del arreglo)
-    for (int i = 0; i < hashTable.getHashTable().length; i++) {
-        Object actual = hashTable.getHashTable()[i];
-
-        // Mientras haya elementos en esta posición (puede ser una estación o una cadena de nodos)
-        while (actual != null) {
-            Estacion estacionActual = null;
-
-            // Extraemos la estación dependiendo de si es un objeto Estacion directo o un Nodo de colisión
-            if (actual instanceof Estacion) {
-                estacionActual = (Estacion) actual;
-                actual = null; // Terminamos esta posición porque era una estación única
-            } else if (actual instanceof Nodo) {
-                Nodo nodoColision = (Nodo) actual;
-                estacionActual = nodoColision.getEstacion(); // Extraemos la estación del nodo
-                actual = nodoColision.getNext(); // Avanzamos al siguiente nodo de la colisión
-            }
-
-            // Si obtuvimos una estación válida, la registramos en GraphStream
-            if (estacionActual != null) {
-                String idEstacion = estacionActual.getID_Estacion(); // O el atributo que uses como identificador único
-
-                // Verificamos que el nodo no haya sido agregado antes para evitar duplicados
-                if (grafoVisual.getNode(idEstacion) == null) {
-                    grafoVisual.addNode(idEstacion);
-                    
-                    // Opcional: ponerle una etiqueta visible con el nombre de la estación
-                    grafoVisual.getNode(idEstacion).setAttribute("ui.label", estacionActual.getNombreEstacion());
-                }
-            }
-        }
+    // 1. Asegurar el nodo de origen (si no existe, lo crea)
+    if (grafoVisual.getNode(idOrigen) == null) {
+        grafoVisual.addNode(idOrigen).setAttribute("ui.label", idOrigen);
     }
+
+    // 2. Crear el nodo de destino SOLO si aún no existe en el grafo
+    if (grafoVisual.getNode(idDestino) == null) {
+        grafoVisual.addNode(idDestino).setAttribute("ui.label", idDestino);
+    }
+
+    // 3. Crear la arista que los conecta (evitando duplicar la arista si ya existe)
+    if (grafoVisual.getEdge(idArista) == null) {
+        Edge arista = grafoVisual.addEdge(idArista, idOrigen, idDestino);
+        arista.setAttribute("weight", tiempo_minutos);
+        arista.setAttribute("ui.label", tiempo_minutos);
+    }
+    return grafoVisual;
+    }
+    
+    public void mostrarGrafo(Graph grafoVisual) {
+        grafoVisual.display();
+    }
+    
 }

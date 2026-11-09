@@ -4,6 +4,8 @@
  */
 package ProyectoEDT;
 import java.io.File;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.SingleGraph;
 /**
  *
  * @author daviel
@@ -12,7 +14,8 @@ public class GUI1 extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GUI1.class.getName());
   
-    TablaHash hashTable = new TablaHash();  
+    TablaHash hashTable = new TablaHash();
+    Graph grafoVisual = new SingleGraph("UrbanRoute");
     /**
      * Creates new form GUI1
      */
@@ -129,7 +132,7 @@ public class GUI1 extends javax.swing.JFrame {
         if (grafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
         } else {
-            texto = g.LeerGrafo(grafo, hashTable);
+            texto = g.LeerGrafo(grafo, hashTable, grafoVisual);
         }
         jTextArea1.setText(texto);
     }//GEN-LAST:event_loadgrafoActionPerformed
@@ -137,7 +140,7 @@ public class GUI1 extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         Grafo grafo = new Grafo();
-        grafo.registrarNodosEnGrafo(hashTable);
+        grafoVisual.display();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

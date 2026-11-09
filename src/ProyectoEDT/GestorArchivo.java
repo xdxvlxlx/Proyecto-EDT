@@ -7,8 +7,9 @@ import javax.swing.JFileChooser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.SingleGraph;
 /**
  *
  * @author daviel
@@ -17,7 +18,7 @@ public class GestorArchivo {
     
     public File CargarArchivo() {
         File archivo = null;
-        JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        JFileChooser j = new JFileChooser();
         j.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter restrict = new FileNameExtensionFilter("Solo archivos .csv", "csv");
         j.addChoosableFileFilter(restrict);
@@ -52,8 +53,8 @@ public class GestorArchivo {
         } 
         return message;
     }
-    
-    public String LeerGrafo(File archivo, TablaHash hashTable) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo
+    public String LeerGrafo(File archivo, TablaHash hashTable, Graph grafoVisual) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo        
+        Grafo grafo = new Grafo();
         String message = "";
         try {
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
@@ -67,7 +68,7 @@ public class GestorArchivo {
                 }
                 String palabra[] = linea.split(",");
                 System.out.println(palabra[0]+"\t"+palabra[1]+"\t"+palabra[2]);
-                //for (int i = 0; i < GUI1.hashTable.getHashTable().length; i++) {
+                grafo.registrarNodosEnGrafo(grafoVisual, palabra[0], palabra[1], Integer.parseInt(palabra[2])); //metodo para construir el grafo Visual
                 int key_origen = hashTable.getHashCode(palabra[0]);
                 int key_destino = hashTable.getHashCode(palabra[1]);
                 Object estacion_origen = hashTable.getValue(key_origen);
@@ -87,7 +88,7 @@ public class GestorArchivo {
                     } else {
                         ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
                     }
-                } 
+                }
             }        
         } catch (Exception e) {
                 System.out.println("A ocurrido un error: " + e.getMessage());

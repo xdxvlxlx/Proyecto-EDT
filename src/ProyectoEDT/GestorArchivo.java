@@ -46,10 +46,10 @@ public class GestorArchivo {
                 hashTable.insertar(nuevaEstacion, hashcode);
             }
         } catch (Exception e) {
-                System.out.println("A ocurrido un error: " + e.getMessage());
-                message = "A ocurrido un error: " + e.getMessage();
+                System.out.println("A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage());
+                message = "A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage();
         } if (message.equals("")) {
-            message = "Se ha cargado el dataset de Estaciones";
+            message = "Se ha cargado correctamente el archivo de Estaciones";
         } 
         return message;
     }
@@ -63,7 +63,7 @@ public class GestorArchivo {
             System.out.println(encabezado[0]+"\t"+encabezado[1]+"\t"+encabezado[2]);
             while ((linea = lector.readLine()) != null) {
                 if (hashTable.esVacia()) {
-                    message = "no se puede cargar grafo porque el diccionario de estaciones no se ha cargado";
+                    message = "No se puede cargar el grafo porque el archivo de estaciones no se ha cargado";
                     break;
                 }
                 String palabra[] = linea.split(",");
@@ -91,10 +91,10 @@ public class GestorArchivo {
                 }
             }        
         } catch (Exception e) {
-                System.out.println("A ocurrido un error: " + e.getMessage());
-                message = "A ocurrido un error: " + e.getMessage();
+                System.out.println("A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage());
+                message = "A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage();
         } if (message.equals("")) {
-            message = "Se ha cargado el archivo grafo";
+            message = "Se ha cargado correctamente el archivo grafo";
         } 
         return message;
     }

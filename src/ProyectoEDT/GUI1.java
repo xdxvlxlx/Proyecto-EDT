@@ -88,7 +88,7 @@ public class GUI1 extends javax.swing.JFrame {
         String texto = "";
         File dict_estaciones = g.CargarArchivo();
         if (dict_estaciones == null) {
-            texto = "Se ha cancelado la carga del dataset de Estaciones";
+            texto = "Se ha cancelado la carga del archivo de Estaciones";
         } else {
             texto = g.LeerEstacion(dict_estaciones, hashTable);
             //texto = "Se ha cargado el dataset de Estaciones";
@@ -99,7 +99,7 @@ public class GUI1 extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         if (hashTable.esVacia()) {
-            String texto = "La Tabla Hash esta Vacia";
+            String texto = "No se puede Cargar la Tabla Hash porque esta Vacia";
             jTextArea1.setText(texto);
         } else {
         String texto = "Valores de la Tabla Hash\n";
@@ -111,7 +111,7 @@ public class GUI1 extends javax.swing.JFrame {
                 miObjeto = (Nodo) miObjeto;
                 String linea = "";
                 while (miObjeto != null) {
-                    linea += ((Nodo) miObjeto).getEstacion().getNombreEstacion()+" -> ";
+                    linea += ((Nodo) miObjeto).getEstacion().getNombreEstacion()+"  ->  ";
                     miObjeto = ((Nodo) miObjeto).getNext();
                 }
                 linea += "null";
@@ -140,7 +140,15 @@ public class GUI1 extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         Grafo grafo = new Grafo();
-        grafoVisual.display();
+        String texto = "";
+        if (grafoVisual.getNodeCount() == 0) {
+            texto = "No se puede mostrar el grafo porque no se ha construido";
+            jTextArea1.setText(texto);
+        } else {
+            texto = "Mostrando el Grafo";
+            jTextArea1.setText(texto);
+            grafo.mostrarGrafo(grafoVisual);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

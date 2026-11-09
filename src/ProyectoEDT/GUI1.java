@@ -6,6 +6,7 @@ package ProyectoEDT;
 import java.io.File;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
+import javax.swing.JOptionPane;
 /**
  *
  * @author daviel
@@ -39,6 +40,10 @@ public class GUI1 extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         loadgrafo = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,6 +73,19 @@ public class GUI1 extends javax.swing.JFrame {
         jButton2.setToolTipText("");
         jButton2.addActionListener(this::jButton2ActionPerformed);
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 50, -1, -1));
+
+        jButton3.setText("eliminar estacion");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 120, -1));
+
+        jTextField1.addActionListener(this::jTextField1ActionPerformed);
+        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 120, 30));
+
+        jLabel1.setText("ingrese el ID de la");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 100, 30));
+
+        jLabel2.setText("estacion a eliminar");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 260, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -151,6 +169,16 @@ public class GUI1 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        //eliminar nodo
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -179,9 +207,13 @@ public class GUI1 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loadEstaciones;
     private javax.swing.JButton loadgrafo;
     // End of variables declaration//GEN-END:variables

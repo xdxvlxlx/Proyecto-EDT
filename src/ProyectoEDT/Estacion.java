@@ -42,4 +42,8 @@ public class Estacion {
     public void setPrimerAdyacente(NodoAdyacente PrimerAdyacente) {
         this.PrimerAdyacente = PrimerAdyacente;
     }
+    
+    public void eliminarEstacion() {
+        
+    }
 }

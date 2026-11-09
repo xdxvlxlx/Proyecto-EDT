@@ -9,12 +9,13 @@ import java.io.FileReader;
 import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
+import javax.swing.JOptionPane;
 /**
  *
  * @author daviel
  */
 public class GestorArchivo {
+    boolean DatosEnMemoria = false;
     
     public File CargarArchivo() {
         File archivo = null;
@@ -32,6 +33,8 @@ public class GestorArchivo {
     public String LeerEstacion(File archivo, TablaHash hashTable) { //Solo para leer .csv de 5 filas, el mismo formato que contiene el dataset Estacion
         //archivo = j.getSelectedFile(); 
         String message = "";
+        HayDatosEnMemoria();
+        
         try {
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
             String linea = lector.readLine();
@@ -50,12 +53,14 @@ public class GestorArchivo {
                 message = "A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage();
         } if (message.equals("")) {
             message = "Se ha cargado correctamente el archivo de Estaciones";
+            DatosEnMemoria = true;
         } 
         return message;
     }
     public String LeerGrafo(File archivo, TablaHash hashTable, Graph grafoVisual) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo        
         Grafo grafo = new Grafo();
         String message = "";
+        HayDatosEnMemoria();
         try {
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
             String linea = lector.readLine();
@@ -95,8 +100,41 @@ public class GestorArchivo {
                 message = "A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage();
         } if (message.equals("")) {
             message = "Se ha cargado correctamente el archivo grafo";
+            DatosEnMemoria = true;
         } 
         return message;
     }
+    
+    public void GuardarDatos() { //aun en progreso
+    }
+    
+    public void HayDatosEnMemoria() { //aun en progreso
+        if (DatosEnMemoria) {
+            int opcion = JOptionPane.showConfirmDialog(
+            null, 
+            "Ya existen datos en memoria. ¿Desea guardarlos antes de cargar un nuevo archivo?", 
+            "Advertencia - Datos sin guardar", 
+            JOptionPane.YES_NO_CANCEL_OPTION, 
+            JOptionPane.WARNING_MESSAGE
+        );
+
+        // 3. Evaluar la respuesta del usuario
+        if (opcion == JOptionPane.YES_OPTION) {
+            // El usuario quiere guardar: Llama a tu función de guardado
+            GuardarDatos(); 
+            // Después de guardar, puedes proceder a abrir el explorador de archivos
+            CargarArchivo();
+            
+        } else if (opcion == JOptionPane.NO_OPTION) {
+            // El usuario NO quiere guardar, pero SÍ quiere cargar el nuevo archivo de una vez
+            CargarArchivo();
+            
+        } else {
+            // Si elige CANCELAR (CANCEL_OPTION) o cierra la ventana, no haces nada
+            return; 
+        }
+        }
+    }
+    
 }
    

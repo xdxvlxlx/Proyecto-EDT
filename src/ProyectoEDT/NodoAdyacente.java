@@ -23,11 +23,15 @@ public class NodoAdyacente {
         return this.Estacion_Destino;
     }
     
-    public void setSiguienteAdyacente(NodoAdyacente SiguienteAdyacente) {
-        this.SiguienteAdyacente = SiguienteAdyacente;
+    public int getTiempo_Minutos() {
+        return this.Tiempo_Minutos;
     }
     
     public NodoAdyacente getSiguienteAdyacente() {
         return this.SiguienteAdyacente;
     }
+    public void setSiguienteAdyacente(NodoAdyacente SiguienteAdyacente) {
+        this.SiguienteAdyacente = SiguienteAdyacente;
+    }
+    
 }

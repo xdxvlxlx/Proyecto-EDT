@@ -10,6 +10,8 @@ import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.graphstream.graph.Graph;
 import javax.swing.JOptionPane;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 /**
  *
  * @author daviel
@@ -29,6 +31,7 @@ public class GestorArchivo {
         }
         return archivo;
     }
+    
     public String LeerEstacion(File archivo, TablaHash hashTable) { //Solo para leer .csv de 5 filas, el mismo formato que contiene el dataset Estacion
         //archivo = j.getSelectedFile(); 
         String message = "";
@@ -77,7 +80,7 @@ public class GestorArchivo {
                     estacion_origen = hashTable.buscarEstacionEncadenada((Nodo) estacion_origen, palabra[0]);
                 } if (estacion_destino instanceof Nodo) {
                     estacion_destino = hashTable.buscarEstacionEncadenada((Nodo) estacion_destino, palabra[1]);
-                } if (estacion_origen instanceof Estacion) {
+                } if (estacion_origen instanceof Estacion && estacion_destino != null) {
                     NodoAdyacente adyacente = new NodoAdyacente((Estacion) estacion_destino, Integer.parseInt(palabra[2]));
                     System.out.println("Estacion: "+((Estacion) estacion_origen).getNombreEstacion()+" tiene adyacente a "+((Estacion)estacion_destino).getNombreEstacion()+" con un peso de "+palabra[2]);
                     if (((Estacion) estacion_destino).getPrimerAdyacente() != null) {
@@ -88,8 +91,12 @@ public class GestorArchivo {
                     } else {
                         ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
                     }
-                }
+                } if(estacion_destino == null || estacion_origen == null) { //error aqui, al cargar el archivo recien guardado, vuelve a generar nodos eliminados, cuando cargo el grafo maestro, no carga los nodos correctamente
+                    System.out.println("La estacion no contiene un origen o no contiene un destino, por lo que se omite");
+                    
+                } else {
                 grafo.registrarNodosEnGrafo(grafoVisual, palabra[0], palabra[1], Integer.parseInt(palabra[2])); //metodo para construir el grafo Visual
+                }
             }        
         } catch (Exception e) {
                 System.out.println("A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage());
@@ -100,10 +107,71 @@ public class GestorArchivo {
         return message;
     }
     
-    public void GuardarDatos() { //aun en progreso
+    
+    public String GuardarDatos(TablaHash hashTable, File nuevoArchivo) {
+        String texto = "";
+        JFileChooser fileChooser = new JFileChooser();
+        //fileChooser.setDialogTitle("Guardar");
+        FileNameExtensionFilter restrict = new FileNameExtensionFilter("Solo archivos .csv", "csv");
+        fileChooser.addChoosableFileFilter(restrict);
+        int userSelection = fileChooser.showSaveDialog(null); // 'this' o el JFrame principal
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            nuevoArchivo = fileChooser.getSelectedFile();
+
+            // Asegurar que tenga la extensión .csv
+            if (!nuevoArchivo.getName().toLowerCase().endsWith(".csv")) {
+                nuevoArchivo = new File(nuevoArchivo.getAbsolutePath() + ".csv");
+            }
+
+            // VALIDACIÓN: ¿El archivo ya existe? Preguntar si desea sobrescribirlo
+            if (nuevoArchivo.exists()) {
+                int respuesta = JOptionPane.showConfirmDialog(
+                    null,
+                    "El archivo ya existe. ¿Deseas sobrescribirlo?",
+                    "Confirmar sobrescritura",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+                );
+
+                if (respuesta != JOptionPane.YES_OPTION) {
+                    texto = "Se cancelo el guardado del archivo";
+                    return texto; // Si el usuario dice que NO, cancelamos el guardado
+                }
+            }
+        try (PrintWriter pw = new PrintWriter(new FileWriter(nuevoArchivo))) {
+            for (int i = 0; i < hashTable.getHashTable().length; i++) {
+                Object estacion = hashTable.getValue(i);
+                if (estacion instanceof Nodo) {
+                    Nodo nodoActual = (Nodo)estacion;
+                    while (nodoActual != null) {
+                        if (nodoActual.getEstacion().getPrimerAdyacente() == null) {
+                            System.out.println("en la estacion actual: "+nodoActual.getEstacion().getID_Estacion()+ " no contiene un siguiente, por lo que se omite y no se guarda");
+                            nodoActual = nodoActual.getNext();
+                        } else {
+                        System.out.println(nodoActual.getEstacion().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getTiempo_Minutos());
+                        pw.println(nodoActual.getEstacion().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getTiempo_Minutos());
+                        nodoActual = nodoActual.getNext();
+                        }
+                    }
+                } else if (estacion instanceof Estacion) {
+                    Estacion estacionActual = (Estacion) estacion;
+                    pw.println(estacionActual.getID_Estacion() + "," + estacionActual.getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," + estacionActual.getPrimerAdyacente().getTiempo_Minutos());
+                }
+            }
+        } catch (Exception e) {
+            texto = "A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage();
+        }
+        texto = "Se ha guardado el archivo "+nuevoArchivo.getName()+" correctamente\nruta de archivo: "+nuevoArchivo.getPath();
+        System.out.println("Se ha guardado el archivo "+nuevoArchivo.getName()+" correctamente\nruta de archivo: "+nuevoArchivo.getPath());
+        
+        } else if(nuevoArchivo == null) {
+            texto = "Se cancelo el guardado del archivo";
+        }
+        return texto;
     }
     
-    public File HayDatosModificados(boolean cambios) {
+    public File HayDatosModificados(boolean cambios, TablaHash hashTable, File nuevoArchivo) {
         File file = null;
         if (cambios) {
             int opcion = JOptionPane.showConfirmDialog(
@@ -117,7 +185,7 @@ public class GestorArchivo {
         // 3. Evaluar la respuesta del usuario
         if (opcion == JOptionPane.YES_OPTION) {
             // El usuario quiere guardar: Llama a tu función de guardado
-            GuardarDatos(); 
+            GuardarDatos(hashTable, nuevoArchivo); 
             // Después de guardar, puedes proceder a abrir el explorador de archivos
             file = CargarArchivo();
             

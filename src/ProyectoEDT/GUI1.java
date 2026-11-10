@@ -19,6 +19,7 @@ public class GUI1 extends javax.swing.JFrame {
     GestorArchivo g = new GestorArchivo();
     Graph grafoVisual = new SingleGraph("UrbanRoute");
     boolean datosModificados = false;
+    File  nuevoArchivo = null;
     /**
      * Creates new form GUI1
      */
@@ -46,6 +47,7 @@ public class GUI1 extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -89,6 +91,10 @@ public class GUI1 extends javax.swing.JFrame {
         jLabel2.setText("estacion a eliminar");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 260, -1, -1));
 
+        jButton4.setText("guardar datos");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -106,7 +112,7 @@ public class GUI1 extends javax.swing.JFrame {
     private void loadEstacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadEstacionesActionPerformed
         g = new GestorArchivo();
         String texto = "";
-        File dict_estaciones = g.HayDatosModificados(datosModificados);
+        File dict_estaciones = g.HayDatosModificados(datosModificados, hashTable, nuevoArchivo);
         if (!datosModificados) {    
             dict_estaciones = g.CargarArchivo();
         }
@@ -151,7 +157,7 @@ public class GUI1 extends javax.swing.JFrame {
     private void loadgrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgrafoActionPerformed
         g = new GestorArchivo();
         String texto = "";
-        File grafo = g.HayDatosModificados(datosModificados);
+        File grafo = g.HayDatosModificados(datosModificados, hashTable, nuevoArchivo);
         if (!datosModificados) {    
             grafo = g.CargarArchivo();
         }
@@ -182,7 +188,7 @@ public class GUI1 extends javax.swing.JFrame {
         if (jTextField1.getText().equals("")) {            
             jTextArea1.setText("No se ha ingresado ningun ID de Estacion");
         } else {    
-            String ID_Estacion = jTextField1.getText();
+            String ID_Estacion = jTextField1.getText().toUpperCase();
             if (hashTable.esVacia()) {
                 jTextArea1.setText("No se ha encontrado el ID "+ID_Estacion);
             } else {
@@ -232,6 +238,19 @@ public class GUI1 extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        String texto = "";
+        if (!datosModificados) {
+            jTextArea1.setText("No se han ocurrido cambios");
+        } else {
+        texto = g.GuardarDatos(hashTable, nuevoArchivo);
+        datosModificados = false;
+        jTextArea1.setText(texto);
+        }
+        
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -261,6 +280,7 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

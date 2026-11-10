@@ -16,7 +16,9 @@ public class GUI1 extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GUI1.class.getName());
   
     TablaHash hashTable = new TablaHash();
+    GestorArchivo g = new GestorArchivo();
     Graph grafoVisual = new SingleGraph("UrbanRoute");
+    boolean datosModificados = false;
     /**
      * Creates new form GUI1
      */
@@ -102,9 +104,12 @@ public class GUI1 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadEstacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadEstacionesActionPerformed
-        GestorArchivo g = new GestorArchivo();
+        g = new GestorArchivo();
         String texto = "";
-        File dict_estaciones = g.CargarArchivo();
+        File dict_estaciones = g.HayDatosModificados(datosModificados);
+        if (!datosModificados) {    
+            dict_estaciones = g.CargarArchivo();
+        }
         if (dict_estaciones == null) {
             texto = "Se ha cancelado la carga del archivo de Estaciones";
         } else {
@@ -144,9 +149,12 @@ public class GUI1 extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadgrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgrafoActionPerformed
-        GestorArchivo g = new GestorArchivo();
+        g = new GestorArchivo();
         String texto = "";
-        File grafo = g.CargarArchivo();
+        File grafo = g.HayDatosModificados(datosModificados);
+        if (!datosModificados) {    
+            grafo = g.CargarArchivo();
+        }
         if (grafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
         } else {
@@ -202,6 +210,9 @@ public class GUI1 extends javax.swing.JFrame {
                         }
 
                         JOptionPane.showMessageDialog(null, "Estación eliminada con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                    jTextArea1.setText("Estacion "+((Estacion) estacion).getID_Estacion()+" eliminada correctamente");
+                    datosModificados = true;
+                    
                     } else {
                         // El usuario presionó "No" o cerró la ventana, no pasa nada
                         jTextArea1.setText("Eliminacion cancelada");

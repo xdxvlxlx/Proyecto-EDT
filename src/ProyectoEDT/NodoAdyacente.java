@@ -26,4 +26,8 @@ public class NodoAdyacente {
     public void setSiguienteAdyacente(NodoAdyacente SiguienteAdyacente) {
         this.SiguienteAdyacente = SiguienteAdyacente;
     }
+    
+    public NodoAdyacente getSiguienteAdyacente() {
+        return this.SiguienteAdyacente;
+    }
 }

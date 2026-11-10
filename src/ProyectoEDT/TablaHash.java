@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package ProyectoEDT;
-
 /**
  *
  * @author ile1
@@ -85,7 +84,7 @@ public class TablaHash {
         return this.hashTable[x];
     }
     
-    public Estacion buscarEstacion(Nodo nodo, String value) { //buscar estacion en los nodos encadenados mediante el valor ID
+    public Estacion buscarEstacionEncadenada(Nodo nodo, String value) { //buscar estacion en los nodos encadenados mediante el valor ID
         Estacion estacion = null;
         while (nodo != null) {
             if (value.equals(nodo.getEstacion().getID_Estacion())) {
@@ -96,4 +95,39 @@ public class TablaHash {
         }
         return estacion;
     }
+    public void eliminarEstacionDeTablaHash(String ID_Estacion) {
+    int hashcode = getHashCode(ID_Estacion);
+    Object actual = this.hashTable[hashcode];
+    Object anterior = null;
+
+    while (actual != null) {
+        Estacion estacionActual = null;
+
+        // Aquí podrías usar tu función para evaluar si la estación actual coincide
+        if (actual instanceof Estacion) {
+            estacionActual = (Estacion) actual;
+            if (estacionActual.getID_Estacion().equals(ID_Estacion)) {
+                this.hashTable[hashcode] = null; // Borrar si es única
+                break;
+            }
+            break;
+        } else if (actual instanceof Nodo) {
+            Nodo nodoColision = (Nodo) actual;
+            estacionActual = nodoColision.getEstacion();
+
+            // Usas tu lógica o validación aquí
+            if (estacionActual.getID_Estacion().equals(ID_Estacion)) {
+                if (anterior == null) {
+                    this.hashTable[hashcode] = nodoColision.getNext();
+                } else {
+                    ((Nodo) anterior).setNext(nodoColision.getNext());
+                }
+                break;
+            }
+            anterior = nodoColision;
+            actual = nodoColision.getNext();
+            }
+        }
+    }
+    
 }

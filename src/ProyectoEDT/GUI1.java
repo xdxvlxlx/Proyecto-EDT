@@ -171,7 +171,49 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        //eliminar nodo
+        if (jTextField1.getText().equals("")) {            
+            jTextArea1.setText("No se ha ingresado ningun ID de Estacion");
+        } else {    
+            String ID_Estacion = jTextField1.getText();
+            if (hashTable.esVacia()) {
+                jTextArea1.setText("No se ha encontrado el ID "+ID_Estacion);
+            } else {
+            int hashcode = hashTable.getHashCode(ID_Estacion);
+            Object estacion = hashTable.getValue(hashcode);
+            if (estacion instanceof Nodo) {
+                estacion = hashTable.buscarEstacionEncadenada((Nodo) estacion, ID_Estacion);
+            }
+            if (estacion instanceof Estacion) {
+                if (ID_Estacion.equals(((Estacion) estacion).getID_Estacion())) {
+                jTextArea1.setText("Estacion a eliminar: "+((Estacion) estacion).getID_Estacion());
+                    int opcion = JOptionPane.showConfirmDialog(
+                    null, 
+                    "¿Estás seguro de que deseas eliminar la estación: " + ((Estacion) estacion).getNombreEstacion() + "?", 
+                    "Confirmar eliminación", 
+                    JOptionPane.YES_NO_OPTION, 
+                    JOptionPane.WARNING_MESSAGE
+                );
+                    // 2. Evaluar la respuesta del usuario
+                    if (opcion == JOptionPane.YES_OPTION) {
+                        // El usuario presionó "Sí", aquí ejecutas tu lógica para borrarla de la tabla hash y del grafo
+                        hashTable.eliminarEstacionDeTablaHash(ID_Estacion);
+                        if (grafoVisual.getNode(ID_Estacion) != null) {
+                            grafoVisual.removeNode(ID_Estacion);
+                        }
+
+                        JOptionPane.showMessageDialog(null, "Estación eliminada con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        // El usuario presionó "No" o cerró la ventana, no pasa nada
+                        jTextArea1.setText("Eliminacion cancelada");
+                    }
+                } else {
+                jTextArea1.setText("Ingrese un ID de estacion valido");
+                } 
+            } else {
+                jTextArea1.setText("Ingrese un ID de estacion valido");
+            }
+            }
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed

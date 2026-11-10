@@ -43,7 +43,4 @@ public class Estacion {
         this.PrimerAdyacente = PrimerAdyacente;
     }
     
-    public void eliminarEstacion() {
-        
-    }
 }

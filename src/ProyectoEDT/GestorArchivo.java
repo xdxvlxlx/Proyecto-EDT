@@ -73,15 +73,14 @@ public class GestorArchivo {
                 }
                 String palabra[] = linea.split(",");
                 System.out.println(palabra[0]+"\t"+palabra[1]+"\t"+palabra[2]);
-                grafo.registrarNodosEnGrafo(grafoVisual, palabra[0], palabra[1], Integer.parseInt(palabra[2])); //metodo para construir el grafo Visual
                 int key_origen = hashTable.getHashCode(palabra[0]);
                 int key_destino = hashTable.getHashCode(palabra[1]);
                 Object estacion_origen = hashTable.getValue(key_origen);
                 Object estacion_destino = hashTable.getValue(key_destino);
                 if (estacion_origen instanceof Nodo) {
-                    estacion_origen = hashTable.buscarEstacion((Nodo) estacion_origen, palabra[0]);
+                    estacion_origen = hashTable.buscarEstacionEncadenada((Nodo) estacion_origen, palabra[0]);
                 } if (estacion_destino instanceof Nodo) {
-                    estacion_destino = hashTable.buscarEstacion((Nodo) estacion_destino, palabra[1]);
+                    estacion_destino = hashTable.buscarEstacionEncadenada((Nodo) estacion_destino, palabra[1]);
                 } if (estacion_origen instanceof Estacion) {
                     NodoAdyacente adyacente = new NodoAdyacente((Estacion) estacion_destino, Integer.parseInt(palabra[2]));
                     System.out.println("Estacion: "+((Estacion) estacion_origen).getNombreEstacion()+" tiene adyacente a "+((Estacion)estacion_destino).getNombreEstacion()+" con un peso de "+palabra[2]);
@@ -94,6 +93,7 @@ public class GestorArchivo {
                         ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
                     }
                 }
+                grafo.registrarNodosEnGrafo(grafoVisual, palabra[0], palabra[1], Integer.parseInt(palabra[2])); //metodo para construir el grafo Visual
             }        
         } catch (Exception e) {
                 System.out.println("A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage());

@@ -15,27 +15,65 @@ public class Grafo {
     
     public Graph registrarNodosEnGrafo(Graph grafoVisual, String estacion_origen, String estacion_destino, int tiempo_minutos) {
         System.setProperty("org.graphstream.ui", "swing");
-        //Graph grafoVisual = new SingleGraph("UrbanRoute");
-        String idOrigen = estacion_origen;   // Nodo que ya existe
-        String idDestino = estacion_destino;  // Nodo nuevo que vas a conectar
-        String idArista = idOrigen + "-" + idDestino;
+        String idArista = estacion_origen + "-" + estacion_destino;
 
         // 1. Asegurar el nodo de origen (si no existe, lo crea)
-        if (grafoVisual.getNode(idOrigen) == null) {
-            grafoVisual.addNode(idOrigen).setAttribute("ui.label", idOrigen);
+        if (grafoVisual.getNode(estacion_origen) == null) {
+            grafoVisual.addNode(estacion_origen).setAttribute("ui.label", estacion_origen);
         }
 
         // 2. Crear el nodo de destino SOLO si aún no existe en el grafo
-        if (grafoVisual.getNode(idDestino) == null) {
-            grafoVisual.addNode(idDestino).setAttribute("ui.label", idDestino);
+        if (grafoVisual.getNode(estacion_destino) == null) {
+            grafoVisual.addNode(estacion_destino).setAttribute("ui.label", estacion_destino);
         }
 
         // 3. Crear la arista que los conecta (evitando duplicar la arista si ya existe)
         if (grafoVisual.getEdge(idArista) == null) {
-            Edge arista = grafoVisual.addEdge(idArista, idOrigen, idDestino);
+            Edge arista = grafoVisual.addEdge(idArista, estacion_origen, estacion_destino);
             arista.setAttribute("weight", tiempo_minutos);
             arista.setAttribute("ui.label", tiempo_minutos);
         }
+        String styleSheet = 
+        // Estilo global del contenedor
+        "graph { padding: 40; fill-color: #FAFAFA; }" +
+
+        // Estilo de los Nodos
+        "node {" +
+        "   size: 20;" +                      // Tamaño del circulo
+        "   fill-color: #73F4FF;" +             // Color del nodo
+        "   stroke-mode: plain;" +              // Borde del nodo
+        "   stroke-color: #000000;" +
+        "   stroke-width: 1;" +
+        "   text-size: 12;" +                 // Tamaño de la letra
+        "   text-style: bold;" +                // Texto en negrita
+        "   text-color: #222222;" +             // Color del texto
+        "   text-alignment: at-right;" +        // Ubica el texto A LA DERECHA del nodo
+        "   text-offset: 8, 0;" +           // Desplaza el texto para que no pise el punto
+        "}" +
+
+        // Estilo de las Aristas (Conexiones)
+        "edge {" +
+        "   fill-color: #000000;" +             // Color de la línea
+        "   size: 2;" +                      // Grosor de la línea
+        "   text-size: 11;" +                 // Tamaño del número (peso)
+        "   text-color: #222222;" +             // Color del peso
+        "   text-background-mode: plain;" +     // Fondo blanco para el texto del peso
+        "   text-background-color: #FFFFFF;" +
+        "   text-alignment: above;" +           // Ajuste para mover el peso fuera del centro
+        "   text-offset: 5, 0;" +           // Desplaza el texto para que no pise el punto
+        "}";
+
+    // Aplicar al grafo
+    grafoVisual.setAttribute("ui.stylesheet", styleSheet);
+        return grafoVisual;
+    }
+    
+    public Graph registrarUnicoNodo(Graph grafoVisual, String ID_Nodo) {
+        System.setProperty("org.graphstream.ui", "swing");
+        if (grafoVisual.getNode(ID_Nodo) == null) {
+            grafoVisual.addNode(ID_Nodo).setAttribute("ui.label", ID_Nodo);;
+        }
+        
         String styleSheet = 
         // Estilo global del contenedor
         "graph { padding: 40; fill-color: #FAFAFA; }" +

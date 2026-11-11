@@ -158,7 +158,6 @@ public class GUI1 extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadgrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgrafoActionPerformed
-        g = new GestorArchivo();
         String texto = "";
         File grafo = g.HayDatosModificados(datosModificados, hashTable, nuevoArchivo);
         if (!datosModificados) {    
@@ -166,6 +165,7 @@ public class GUI1 extends javax.swing.JFrame {
         }
         if (grafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
+            
         } else {
             texto = g.LeerGrafo(grafo, hashTable, grafoVisual);
         }
@@ -213,8 +213,7 @@ public class GUI1 extends javax.swing.JFrame {
                     // 2. Evaluar la respuesta del usuario
                     if (opcion == JOptionPane.YES_OPTION) {
                         // El usuario presionó "Sí", aquí ejecutas tu lógica para borrarla de la tabla hash y del grafo
-                        hashTable.eliminarEstacionDeTablaHash(ID_Estacion);
-                        String texto = g.GuardadoAutomatico(hashTable, archivoMaestro);
+                        String texto = g.GuardadoAutomatico(hashTable, archivoMaestro, ID_Estacion);
                         if (!texto.contains("Error")) {
                             if (grafoVisual.getNode(ID_Estacion) != null) {
                                 grafoVisual.removeNode(ID_Estacion);
@@ -223,6 +222,7 @@ public class GUI1 extends javax.swing.JFrame {
                                 jTextArea1.setText("Estacion "+((Estacion) estacion).getID_Estacion()+" eliminada correctamente");
                                 datosModificados = true;
                                 jLabelGuardadoAuto.setText(texto);
+                                //hashTable.eliminarEstacionDeTablaHash(ID_Estacion);
                         }
                     } else {
                         // El usuario presionó "No" o cerró la ventana, no pasa nada
@@ -250,7 +250,9 @@ public class GUI1 extends javax.swing.JFrame {
             jTextArea1.setText("No se han ocurrido cambios");
         } else {
         texto = g.GuardarDatos(hashTable, nuevoArchivo);
-        datosModificados = false;
+        if (!texto.equals("Se cancelo el guardado del archivo")) {
+            datosModificados = false;
+        }
         jTextArea1.setText(texto);
         }
         

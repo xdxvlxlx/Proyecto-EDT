@@ -86,7 +86,19 @@ public class GestorArchivo {
                     estacion_origen = hashTable.buscarEstacionEncadenada((Nodo) estacion_origen, palabra[0]);
                 } if (estacion_destino instanceof Nodo) {
                     estacion_destino = hashTable.buscarEstacionEncadenada((Nodo) estacion_destino, palabra[1]);
-                } if (estacion_origen instanceof Estacion && estacion_destino != null) {
+                // if (!((Estacion)estacion_origen).getID_Estacion().equals(palabra[0])) {
+                //     System.out.println("---ERROR: "+((Estacion)estacion_origen).getNombreEstacion()+" no coincide con el valor "+palabra[0]);
+                } if (estacion_origen == null && estacion_destino == null) {
+                    System.out.println("---ERROR: ambas estaciones son null");
+                } else  if(estacion_origen == null) {
+                    System.out.println("---ERROR: la estacion origen es null");
+                    grafo.registrarUnicoNodo(grafoVisual, ((Estacion)estacion_destino).getID_Estacion());
+                    //deberia crear el nodo pero sin conectarlo
+                    //crear una funcion en la clase grafo para añadir nodos sin tener que conectarlos
+                } else if (estacion_destino == null) { //destino es null, entonces origen es un nodo que no conecta a nada
+                    System.out.println("---ERROR: la estacion destino es null");
+                    grafo.registrarUnicoNodo(grafoVisual, ((Estacion)estacion_origen).getID_Estacion());
+                } else if (estacion_origen instanceof Estacion) {
                     NodoAdyacente adyacente = new NodoAdyacente((Estacion) estacion_destino, Integer.parseInt(palabra[2]));
                     System.out.println("Estacion: "+((Estacion) estacion_origen).getNombreEstacion()+" tiene adyacente a "+((Estacion)estacion_destino).getNombreEstacion()+" con un peso de "+palabra[2]);
                     if (((Estacion) estacion_destino).getPrimerAdyacente() != null) {
@@ -97,13 +109,7 @@ public class GestorArchivo {
                     } else {
                         ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
                     }
-                } if(estacion_destino == null) {
-                    System.out.println("La estacion "+((Estacion)estacion_origen).getNombreEstacion()+" no contiene un destino, por lo que se omite");
-                } else if(estacion_origen == null) {
-                    //deberia crear el nodo pero sin conectarlo
-                    //crear una funcion en la clase grafo para añadir nodos sin tener que conectarlos
-                } else {
-                grafo.registrarNodosEnGrafo(grafoVisual, ((Estacion)estacion_origen).getID_Estacion(), ((Estacion)estacion_destino).getID_Estacion(), Integer.parseInt(palabra[2])); //metodo para construir el grafo Visual
+                    grafo.registrarNodosEnGrafo(grafoVisual, ((Estacion)estacion_origen).getID_Estacion(), ((Estacion)estacion_destino).getID_Estacion(), Integer.parseInt(palabra[2])); //metodo para construir el grafo Visual
                 }
             }        
         } catch (Exception e) {
@@ -185,7 +191,7 @@ public class GestorArchivo {
         if (cambios) {
             int opcion = JOptionPane.showConfirmDialog(
             null, 
-            "Ya existen datos en memoria. ¿Desea guardarlos antes de cargar un nuevo archivo?", 
+            "Existen datos modificados. ¿Desea guardarlos antes de cargar un nuevo archivo?", 
             "Advertencia - Datos sin guardar", 
             JOptionPane.YES_NO_CANCEL_OPTION, 
             JOptionPane.WARNING_MESSAGE
@@ -194,7 +200,10 @@ public class GestorArchivo {
         // 3. Evaluar la respuesta del usuario
         if (opcion == JOptionPane.YES_OPTION) {
             // El usuario quiere guardar: Llama a tu función de guardado
-            GuardarDatos(hashTable, nuevoArchivo); 
+            String texto = GuardarDatos(hashTable, nuevoArchivo); 
+            if (texto.equals("Se cancelo el guardado del archivo")) {
+                return file;
+            }
             // Después de guardar, puedes proceder a abrir el explorador de archivos
             file = CargarArchivo();
             
@@ -211,7 +220,7 @@ public class GestorArchivo {
         return file;
     }
     
-    public String GuardadoAutomatico(TablaHash hashTable, File archivoMaestro) {
+    public String GuardadoAutomatico(TablaHash hashTable, File archivoMaestro, String ID_Estacion) {
         String texto = "";
         // Si es la primera vez y no hay archivo previo, abrimos el selector
         if (archivoMaestro == null) {
@@ -222,6 +231,7 @@ public class GestorArchivo {
 
         // Si ya tenemos un archivo de referencia, sobrescribimos de forma silenciosa
         try (PrintWriter pw = new PrintWriter(new FileWriter(archivoMaestro))) {
+            hashTable.eliminarEstacionDeTablaHash(ID_Estacion);
             pw.println("ID_Estacion,Nombre,Linea,Zona,Capacidad_Pasajeros_Hora");
             for (int i = 0; i < hashTable.getHashTable().length; i++) {
                 Object actual = hashTable.getValue(i);

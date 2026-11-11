@@ -37,6 +37,9 @@ public class GestorArchivo {
         String message = "";
         
         try {
+            if (!hashTable.esVacia()) {
+                hashTable.vaciarTablaHash();
+            }
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
             String linea = lector.readLine();
             String encabezado[] = linea.split(",");
@@ -59,6 +62,9 @@ public class GestorArchivo {
     }
     public String LeerGrafo(File archivo, TablaHash hashTable, Graph grafoVisual) { //Solo para leer .csv de 3 filas, el mismo formato que contiene el grafo.csv de ejemplo        
         Grafo grafo = new Grafo();
+        if (grafoVisual.getNodeCount() > 0) {
+            grafoVisual.clear();
+        }
         String message = "";
         try {
             BufferedReader lector = new BufferedReader(new FileReader(archivo)); 
@@ -75,7 +81,7 @@ public class GestorArchivo {
                 int key_origen = hashTable.getHashCode(palabra[0]);
                 int key_destino = hashTable.getHashCode(palabra[1]);
                 Object estacion_origen = hashTable.getValue(key_origen);
-                Object estacion_destino = hashTable.getValue(key_destino);
+                Object estacion_destino = hashTable.getValue(key_destino); //error, cuando no existe la estacion pero coincide el indice, toma como destino el objeto encontrado en ese indice
                 if (estacion_origen instanceof Nodo) {
                     estacion_origen = hashTable.buscarEstacionEncadenada((Nodo) estacion_origen, palabra[0]);
                 } if (estacion_destino instanceof Nodo) {
@@ -91,11 +97,13 @@ public class GestorArchivo {
                     } else {
                         ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
                     }
-                } if(estacion_destino == null || estacion_origen == null) { //error aqui, al cargar el archivo recien guardado, vuelve a generar nodos eliminados, cuando cargo el grafo maestro, no carga los nodos correctamente
-                    System.out.println("La estacion no contiene un origen o no contiene un destino, por lo que se omite");
-                    
+                } if(estacion_destino == null) {
+                    System.out.println("La estacion "+((Estacion)estacion_origen).getNombreEstacion()+" no contiene un destino, por lo que se omite");
+                } else if(estacion_origen == null) {
+                    //deberia crear el nodo pero sin conectarlo
+                    //crear una funcion en la clase grafo para añadir nodos sin tener que conectarlos
                 } else {
-                grafo.registrarNodosEnGrafo(grafoVisual, palabra[0], palabra[1], Integer.parseInt(palabra[2])); //metodo para construir el grafo Visual
+                grafo.registrarNodosEnGrafo(grafoVisual, ((Estacion)estacion_origen).getID_Estacion(), ((Estacion)estacion_destino).getID_Estacion(), Integer.parseInt(palabra[2])); //metodo para construir el grafo Visual
                 }
             }        
         } catch (Exception e) {
@@ -114,7 +122,7 @@ public class GestorArchivo {
         //fileChooser.setDialogTitle("Guardar");
         FileNameExtensionFilter restrict = new FileNameExtensionFilter("Solo archivos .csv", "csv");
         fileChooser.addChoosableFileFilter(restrict);
-        int userSelection = fileChooser.showSaveDialog(null); // 'this' o el JFrame principal
+        int userSelection = fileChooser.showSaveDialog(null);
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             nuevoArchivo = fileChooser.getSelectedFile();
@@ -140,6 +148,7 @@ public class GestorArchivo {
                 }
             }
         try (PrintWriter pw = new PrintWriter(new FileWriter(nuevoArchivo))) {
+            pw.println("Estacion_Origen,Estacion_Destino,Tiempo_Minutos");
             for (int i = 0; i < hashTable.getHashTable().length; i++) {
                 Object estacion = hashTable.getValue(i);
                 if (estacion instanceof Nodo) {
@@ -200,6 +209,41 @@ public class GestorArchivo {
         }
         //file =  CargarArchivo();
         return file;
+    }
+    
+    public String GuardadoAutomatico(TablaHash hashTable, File archivoMaestro) {
+        String texto = "";
+        // Si es la primera vez y no hay archivo previo, abrimos el selector
+        if (archivoMaestro == null) {
+            GuardarDatos(hashTable, archivoMaestro);
+            texto = "test";
+            return texto;
+        }
+
+        // Si ya tenemos un archivo de referencia, sobrescribimos de forma silenciosa
+        try (PrintWriter pw = new PrintWriter(new FileWriter(archivoMaestro))) {
+            pw.println("ID_Estacion,Nombre,Linea,Zona,Capacidad_Pasajeros_Hora");
+            for (int i = 0; i < hashTable.getHashTable().length; i++) {
+                Object actual = hashTable.getValue(i);
+                if (actual instanceof Nodo) {
+                    while ((Nodo)actual != null) {
+                        Estacion estacionActual = ((Nodo) actual).getEstacion();
+                        pw.println(estacionActual.getID_Estacion() + "," + estacionActual.getNombreEstacion() + "," + estacionActual.getLineaEstacion() + "," + estacionActual.getZonaEstacion() + "," + estacionActual.getCapacidad_Pasajeros_Hora());
+                        actual = ((Nodo)actual).getNext();
+                    }
+                } else if (actual instanceof Estacion) {
+                    Estacion estacionActual = (Estacion) actual;
+                    pw.println(estacionActual.getID_Estacion() + "," + estacionActual.getNombreEstacion() + "," + estacionActual.getLineaEstacion() + "," + estacionActual.getZonaEstacion() + "," + estacionActual.getCapacidad_Pasajeros_Hora());
+                }
+            }
+            System.out.println("Cambios guardados automáticamente en: " + archivoMaestro.getName());
+            texto = "Cambios guardados automáticamente";
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al guardar automáticamente: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            texto = "Error: "+e.getMessage();
+            
+        }
+        return texto;
     }
     
 }

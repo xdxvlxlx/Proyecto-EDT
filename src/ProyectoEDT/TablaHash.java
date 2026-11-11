@@ -30,6 +30,12 @@ public class TablaHash {
         return vacia;
     }
     
+    public void vaciarTablaHash() {
+        for (int i = 0; i < this.hashTable.length; i++) {
+            this.hashTable[i] = null;
+        }
+    }
+    
     public int getHashCode(String nombre) {
         char[] letras = nombre.toCharArray();
         int suma = 0;

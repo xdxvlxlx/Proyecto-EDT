@@ -35,6 +35,18 @@ public class Estacion {
         return this.ID_Estacion;
     }
     
+    public String getLineaEstacion() {
+        return this.Linea;
+    }
+    
+    public String getZonaEstacion() {
+        return this.Zona;
+    }
+    
+    public int getCapacidad_Pasajeros_Hora() {
+        return this.Capacidad_Pasajeros_Hora;
+    }
+    
     public NodoAdyacente getPrimerAdyacente() {
         return this.PrimerAdyacente;
     }

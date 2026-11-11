@@ -19,7 +19,8 @@ public class GUI1 extends javax.swing.JFrame {
     GestorArchivo g = new GestorArchivo();
     Graph grafoVisual = new SingleGraph("UrbanRoute");
     boolean datosModificados = false;
-    File  nuevoArchivo = null;
+    File nuevoArchivo = null;
+    File archivoMaestro = null;
     /**
      * Creates new form GUI1
      */
@@ -48,6 +49,7 @@ public class GUI1 extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
+        jLabelGuardadoAuto = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -62,7 +64,7 @@ public class GUI1 extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 210, 510, 380));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 190, 510, 380));
 
         jButton1.setText("imprimir tabla hash");
         jButton1.addActionListener(this::jButton1ActionPerformed);
@@ -94,6 +96,7 @@ public class GUI1 extends javax.swing.JFrame {
         jButton4.setText("guardar datos");
         jButton4.addActionListener(this::jButton4ActionPerformed);
         jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
+        jPanel1.add(jLabelGuardadoAuto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 570, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -112,15 +115,15 @@ public class GUI1 extends javax.swing.JFrame {
     private void loadEstacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadEstacionesActionPerformed
         g = new GestorArchivo();
         String texto = "";
-        File dict_estaciones = g.HayDatosModificados(datosModificados, hashTable, nuevoArchivo);
-        if (!datosModificados) {    
-            dict_estaciones = g.CargarArchivo();
-        }
-        if (dict_estaciones == null) {
+        //File dict_estaciones = g.HayDatosModificados(datosModificados, hashTable, nuevoArchivo);
+        
+        archivoMaestro = g.CargarArchivo();
+        if (archivoMaestro == null) {
             texto = "Se ha cancelado la carga del archivo de Estaciones";
         } else {
-            texto = g.LeerEstacion(dict_estaciones, hashTable);
+            texto = g.LeerEstacion(archivoMaestro, hashTable);
             //texto = "Se ha cargado el dataset de Estaciones";
+            jLabelGuardadoAuto.setText(archivoMaestro.getName()+ " cargado");
         }
         jTextArea1.setText(texto);
     }//GEN-LAST:event_loadEstacionesActionPerformed
@@ -135,7 +138,7 @@ public class GUI1 extends javax.swing.JFrame {
         for (int i = 0; i < hashTable.getHashTable().length; i++) {
             Object miObjeto = hashTable.getHashTable()[i];
             if (miObjeto instanceof Estacion) {
-                texto += "\n["+i+"] "+((Estacion)miObjeto).getNombreEstacion();
+                texto += "\n["+i+"] "+((Estacion)miObjeto).getNombreEstacion() + "  -> null";
             } else if (miObjeto instanceof Nodo) {
                 miObjeto = (Nodo) miObjeto;
                 String linea = "";
@@ -211,14 +214,16 @@ public class GUI1 extends javax.swing.JFrame {
                     if (opcion == JOptionPane.YES_OPTION) {
                         // El usuario presionó "Sí", aquí ejecutas tu lógica para borrarla de la tabla hash y del grafo
                         hashTable.eliminarEstacionDeTablaHash(ID_Estacion);
-                        if (grafoVisual.getNode(ID_Estacion) != null) {
-                            grafoVisual.removeNode(ID_Estacion);
+                        String texto = g.GuardadoAutomatico(hashTable, archivoMaestro);
+                        if (!texto.contains("Error")) {
+                            if (grafoVisual.getNode(ID_Estacion) != null) {
+                                grafoVisual.removeNode(ID_Estacion);
+                            }
+                                JOptionPane.showMessageDialog(null, "Estación eliminada con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                                jTextArea1.setText("Estacion "+((Estacion) estacion).getID_Estacion()+" eliminada correctamente");
+                                datosModificados = true;
+                                jLabelGuardadoAuto.setText(texto);
                         }
-
-                        JOptionPane.showMessageDialog(null, "Estación eliminada con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
-                    jTextArea1.setText("Estacion "+((Estacion) estacion).getID_Estacion()+" eliminada correctamente");
-                    datosModificados = true;
-                    
                     } else {
                         // El usuario presionó "No" o cerró la ventana, no pasa nada
                         jTextArea1.setText("Eliminacion cancelada");
@@ -283,6 +288,7 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelGuardadoAuto;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;

@@ -277,6 +277,8 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        ConectarEstaciones dialog = new ConectarEstaciones(this, true, this);
+        dialog.setVisible(true); // Muestra la ventana emergente
     }//GEN-LAST:event_jButton6ActionPerformed
 
     /**

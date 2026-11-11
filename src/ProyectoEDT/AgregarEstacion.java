@@ -79,19 +79,12 @@ public class AgregarEstacion extends javax.swing.JDialog {
         // TODO add your handling code here:
         //ID_Estacion,Nombre,Linea,Zona,Capacidad_Pasajeros_Hora
         String[] datosEstacion = jTextField1.getText().split(",");
-        //String ID_Estacion = datosEstacion[0];
-        //String Nombre = datosEstacion[1];
-        //String Linea = datosEstacion[2];
-        //String Zona = datosEstacion[3];
-        //int Capacidad_Pasajeros_Hora = Integer.parseInt(datosEstacion[4]);
-        
-        // 2. Validar campos vacíos
         if (datosEstacion.length < 5) {
             javax.swing.JOptionPane.showMessageDialog(this, "Por favor completa todos los campos.", "Campos vacíos", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
-            String texto = GUI1.g.guardarLineaFinal(GUI1.archivoMaestro, datosEstacion);
+            String texto = GUI1.g.guardarEstacionLineaFinal(GUI1.archivoMaestro, datosEstacion);
             GUI1.jLabelGuardadoAuto.setText(texto);
             GUI1.jTextArea1.setText("Estacion Añadida:\n"+datosEstacion[0]+" "+datosEstacion[1]+" "+datosEstacion[2]+" "+datosEstacion[3]+" "+datosEstacion[4]);
             this.dispose();

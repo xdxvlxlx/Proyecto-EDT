@@ -55,7 +55,7 @@ public class Grafo {
         "edge {" +
         "   fill-color: #000000;" +             // Color de la línea
         "   size: 2;" +                      // Grosor de la línea
-        "   text-size: 11;" +                 // Tamaño del número (peso)
+        "   text-size: 14;" +                 // Tamaño del número (peso)
         "   text-color: #222222;" +             // Color del peso
         "   text-background-mode: plain;" +     // Fondo blanco para el texto del peso
         "   text-background-color: #FFFFFF;" +
@@ -90,18 +90,6 @@ public class Grafo {
         "   text-color: #222222;" +             // Color del texto
         "   text-alignment: at-right;" +        // Ubica el texto A LA DERECHA del nodo
         "   text-offset: 8, 0;" +           // Desplaza el texto para que no pise el punto
-        "}" +
-
-        // Estilo de las Aristas (Conexiones)
-        "edge {" +
-        "   fill-color: #000000;" +             // Color de la línea
-        "   size: 2;" +                      // Grosor de la línea
-        "   text-size: 11;" +                 // Tamaño del número (peso)
-        "   text-color: #222222;" +             // Color del peso
-        "   text-background-mode: plain;" +     // Fondo blanco para el texto del peso
-        "   text-background-color: #FFFFFF;" +
-        "   text-alignment: above;" +           // Ajuste para mover el peso fuera del centro
-        "   text-offset: 5, 0;" +           // Desplaza el texto para que no pise el punto
         "}";
 
     // Aplicar al grafo
@@ -109,7 +97,7 @@ public class Grafo {
         return grafoVisual;
     }
     
-    
+
     public void mostrarGrafo(Graph grafoVisual) {
         Viewer viewer = grafoVisual.display();
         viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);

@@ -256,7 +256,7 @@ public class GestorArchivo {
         return texto;
     }
     
-    public String guardarLineaFinal(File archivoMaestro, String[] datosEstacion) {
+    public String guardarEstacionLineaFinal(File archivoMaestro, String[] datosEstacion) {
     // El 'true' en el FileWriter le indica a Java que no sobrescriba, sino que escriba al final
         String texto = "";
         try (PrintWriter pw = new PrintWriter(new FileWriter(archivoMaestro, true))) {
@@ -271,5 +271,19 @@ public class GestorArchivo {
         return texto;
     }
     
+    public String guardarConexionLineaFinal(File nuevoArchivo, String[] datosConexion) {
+    // El 'true' en el FileWriter le indica a Java que no sobrescriba, sino que escriba al final
+        String texto = "";
+        try (PrintWriter pw = new PrintWriter(new FileWriter(nuevoArchivo, true))) {
+            // Escribe la nueva línea respetando el formato CSV
+            pw.println(datosConexion[0].trim() + "," + datosConexion[1].trim() + "," + datosConexion[2].trim());
+            System.out.println("Línea agregada exitosamente al final del archivo.");
+            texto = "Cambios realizados a "+nuevoArchivo.getName();
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Error al escribir en el archivo: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            texto = "Error: "+e.getMessage();
+        }
+        return texto;
+    }
 }
    

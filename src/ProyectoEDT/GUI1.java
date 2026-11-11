@@ -15,12 +15,12 @@ public class GUI1 extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GUI1.class.getName());
   
-    TablaHash hashTable = new TablaHash();
-    GestorArchivo g = new GestorArchivo();
-    Graph grafoVisual = new SingleGraph("UrbanRoute");
-    boolean datosModificados = false;
-    File nuevoArchivo = null;
-    File archivoMaestro = null;
+    protected TablaHash hashTable = new TablaHash();
+    protected GestorArchivo g = new GestorArchivo();
+    protected Graph grafoVisual = new SingleGraph("UrbanRoute");
+    protected boolean datosModificados = false;
+    protected File nuevoArchivo = null;
+    protected File archivoMaestro = null;
     /**
      * Creates new form GUI1
      */
@@ -50,6 +50,8 @@ public class GUI1 extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jLabelGuardadoAuto = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,6 +99,14 @@ public class GUI1 extends javax.swing.JFrame {
         jButton4.addActionListener(this::jButton4ActionPerformed);
         jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
         jPanel1.add(jLabelGuardadoAuto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 570, -1, -1));
+
+        jButton5.setText("agregar estacion");
+        jButton5.addActionListener(this::jButton5ActionPerformed);
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 340, -1, -1));
+
+        jButton6.setText("conectar estaciones");
+        jButton6.addActionListener(this::jButton6ActionPerformed);
+        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 390, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -258,6 +268,17 @@ public class GUI1 extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        AgregarEstacion dialog = new AgregarEstacion(this, true, this);
+        dialog.setVisible(true); // Muestra la ventana emergente
+        
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -288,12 +309,14 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabelGuardadoAuto;
+    javax.swing.JLabel jLabelGuardadoAuto;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    javax.swing.JScrollPane jScrollPane1;
+    javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loadEstaciones;
     private javax.swing.JButton loadgrafo;

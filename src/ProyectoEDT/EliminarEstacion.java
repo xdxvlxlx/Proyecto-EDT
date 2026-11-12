@@ -102,7 +102,7 @@ public class EliminarEstacion extends javax.swing.JDialog {
                             }
                                 JOptionPane.showMessageDialog(null, "Estación \""+((Estacion) estacion).getID_Estacion()+"\" eliminada con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
                                 //GUI1.jTextArea1.setText("Estacion "+((Estacion) estacion).getID_Estacion()+" eliminada correctamente");
-                                GUI1.datosModificados = true;
+                                //GUI1.datosModificados = true;
                                 GUI1.jLabelGuardadoAuto.setText(texto);
                                 //hashTable.eliminarEstacionDeTablaHash(ID_Estacion);
                                 this.dispose();
@@ -110,6 +110,7 @@ public class EliminarEstacion extends javax.swing.JDialog {
                     } else {
                         // El usuario presionó "No" o cerró la ventana, no pasa nada
                         GUI1.jTextArea1.setText("Eliminacion cancelada");
+                        this.dispose();
                     }
                 } else {
                 GUI1.jTextArea1.setText("Ingrese un ID de estacion valido");

@@ -111,6 +111,7 @@ public class GUI1 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadEstacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadEstacionesActionPerformed
+        jLabelGuardadoAuto.setText("");
         g = new GestorArchivo();
         String texto = "";
         //File dict_estaciones = g.HayDatosModificados(datosModificados, hashTable, nuevoArchivo);
@@ -156,8 +157,10 @@ public class GUI1 extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadgrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgrafoActionPerformed
+        jLabelGuardadoAuto.setText("");
         String texto = "";
-        archivoGrafo = g.HayDatosModificados(datosModificados, hashTable, archivoGrafo);
+        //archivoGrafo = g.HayDatosModificados(datosModificados, hashTable, archivoGrafo);
+        archivoGrafo = g.CargarArchivo();
         if (archivoGrafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
             
@@ -166,12 +169,14 @@ public class GUI1 extends javax.swing.JFrame {
             //en lugar deberia salir que se cancelo, algun cambio hay que hacer con la variable "datosModificados"
             //refactorizar esta parte
             texto = g.LeerGrafo(archivoGrafo, hashTable, grafoVisual);
+            jLabelGuardadoAuto.setText(archivoGrafo.getName()+ " cargado");
         }
         jTextArea1.setText(texto);
     }//GEN-LAST:event_loadgrafoActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        jLabelGuardadoAuto.setText("");
         Grafo grafo = new Grafo();
         String texto = "";
         if (grafoVisual.getNodeCount() == 0) {
@@ -192,28 +197,30 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        String texto = "";
-        if (!datosModificados) {
-            jTextArea1.setText("No se han ocurrido cambios");
-        } else {
-        texto = g.GuardarDatos(hashTable, archivoGrafo);
+        jLabelGuardadoAuto.setText("");
+        String texto = ""; //cambiar el como funciona los datosModificados
+        //if (!datosModificados) {
+        //    jTextArea1.setText("No se han ocurrido cambios");
+        //} else {
+        texto = g.GuardarDatos(hashTable, archivoGrafo); //refactorizar la funcion GuardarDatos, porque no esta guardando bien xdxdxd
         if (!texto.equals("Se cancelo el guardado del archivo")) {
             datosModificados = false;
         }
         jTextArea1.setText(texto);
-        }
+        
         
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        jLabelGuardadoAuto.setText("");
         AgregarEstacion dialog = new AgregarEstacion(this, true, this);
         dialog.setVisible(true); // Muestra la ventana emergente
-        
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        jLabelGuardadoAuto.setText("");
         ConectarEstacion dialog = new ConectarEstacion(this, true, this);
         dialog.setVisible(true); // Muestra la ventana emergente
     }//GEN-LAST:event_jButton6ActionPerformed

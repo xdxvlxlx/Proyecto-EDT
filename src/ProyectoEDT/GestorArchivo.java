@@ -187,7 +187,7 @@ public class GestorArchivo {
         return texto;
     }
     
-    public File HayDatosModificados(boolean cambios, TablaHash hashTable, File archivoGrafo) {
+    public File HayDatosModificados(boolean cambios, TablaHash hashTable, File archivoGrafo) { //Deprecated
         File archivoResultado = archivoGrafo; // Por defecto devolvemos el archivo actual
 
         if (cambios) {
@@ -283,7 +283,6 @@ public class GestorArchivo {
             System.out.println("Línea agregada exitosamente al final del archivo.");
             texto = "Cambios realizados a "+archivoMaestro.getName();
         } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Error al escribir en el archivo: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             texto = "Error: "+e.getMessage();
         }
         return texto;
@@ -322,10 +321,9 @@ public class GestorArchivo {
                 // Escribe la nueva línea respetando el formato CSV
                 pw.println(datosConexion[0].trim() + "," + datosConexion[1].trim() + "," + datosConexion[2].trim());
                 System.out.println("Línea agregada exitosamente al final del archivo.");
-                texto = "Cambios realizados a "+archivoGrafo.getName();
+                texto = "Cambios guardados en "+archivoGrafo.getName();
                 
             } catch (Exception e) {
-                javax.swing.JOptionPane.showMessageDialog(null, "Error al escribir en el archivo: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
                 texto = "Error: "+e.getMessage();
             }
         }

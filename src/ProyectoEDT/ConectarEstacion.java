@@ -68,12 +68,13 @@ public class ConectarEstacion extends javax.swing.JDialog {
         //Estacion_origen, Estacion_destino, Tiempo_minutos
         Grafo grafo = new Grafo();
         String[] datosConexion = jTextField1.getText().toUpperCase().split(",");
-        datosConexion[0] = datosConexion[0].trim();
-        datosConexion[1] = datosConexion[1].trim();
-        datosConexion[2] = datosConexion[2].trim();
-        if (datosConexion.length < 3) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Por favor completa todos los campos.", "Campos vacíos", javax.swing.JOptionPane.WARNING_MESSAGE);
+        if (datosConexion.length != 3) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor Ingrese Valores Validos.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
+        } else {
+            datosConexion[0] = datosConexion[0].trim();
+            datosConexion[1] = datosConexion[1].trim();
+            datosConexion[2] = datosConexion[2].trim();
         }
         try {
             int key_origen = GUI1.hashTable.getHashCode(datosConexion[0]);
@@ -105,7 +106,7 @@ public class ConectarEstacion extends javax.swing.JDialog {
             //crear funcion para conectar los nodos
             GUI1.jLabelGuardadoAuto.setText(texto);
             //GUI1.datosModificados = true;
-            GUI1.jTextArea1.setText("Nuevas Conexiones Añadidas:\n"+datosConexion[0]+"-"+datosConexion[1]+"\nTiempo en minutos: "+datosConexion[2]);
+            GUI1.jTextArea1.setText("Nuevas Conexiones Añadidas:\n\t"+datosConexion[0]+"-"+datosConexion[1]+"\nTiempo en minutos: "+datosConexion[2]);
             this.dispose();
 
         } catch (NumberFormatException e) {

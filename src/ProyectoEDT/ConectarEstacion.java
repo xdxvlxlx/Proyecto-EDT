@@ -3,17 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package ProyectoEDT;
-import java.io.File;
 /**
  *
  * @author ile2
  */
-public class ConectarEstaciones extends javax.swing.JDialog {
+public class ConectarEstacion extends javax.swing.JDialog {
     private GUI1 GUI1; 
     /**
      * Creates new form ConectarEstaciones
      */
-    public ConectarEstaciones(java.awt.Frame parent, boolean modal, GUI1 gui1) {
+    public ConectarEstacion(java.awt.Frame parent, boolean modal, GUI1 gui1) {
         super(parent, modal);
         initComponents();
         this.GUI1 = gui1;
@@ -66,7 +65,12 @@ public class ConectarEstaciones extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String[] datosConexion = jTextField1.getText().split(",");
+        //Estacion_origen, Estacion_destino, Tiempo_minutos
+        Grafo grafo = new Grafo();
+        String[] datosConexion = jTextField1.getText().toUpperCase().split(",");
+        datosConexion[0] = datosConexion[0].trim();
+        datosConexion[1] = datosConexion[1].trim();
+        datosConexion[2] = datosConexion[2].trim();
         if (datosConexion.length < 3) {
             javax.swing.JOptionPane.showMessageDialog(this, "Por favor completa todos los campos.", "Campos vacíos", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
@@ -76,11 +80,32 @@ public class ConectarEstaciones extends javax.swing.JDialog {
             int key_destino = GUI1.hashTable.getHashCode(datosConexion[1]);
             Object estacion_origen = GUI1.hashTable.getValue(key_origen);
             Object estacion_destino = GUI1.hashTable.getValue(key_destino);
+            if (estacion_origen instanceof Nodo) {
+                estacion_origen = GUI1.hashTable.buscarEstacionEncadenada((Nodo) estacion_origen, datosConexion[0]);
+            } if (estacion_destino instanceof Nodo) {
+                estacion_destino = GUI1.hashTable.buscarEstacionEncadenada((Nodo) estacion_destino, datosConexion[1]);
+            } if (estacion_origen == null && estacion_destino == null) {
+                System.out.println("---ERROR: ambas estaciones son null");
+                javax.swing.JOptionPane.showMessageDialog(this, "Ambas Estaciones no existen", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            } else if(estacion_origen == null) {
+                System.out.println("---ERROR: la estacion origen es null");
+                javax.swing.JOptionPane.showMessageDialog(this, "La estacion origen no existe", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            } else if (estacion_destino == null) { //destino es null, entonces origen es un nodo que no conecta a nada
+                System.out.println("---ERROR: la estacion destino es null");
+                javax.swing.JOptionPane.showMessageDialog(this, "La estacion destino no existe", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
             //aun en progreso, determinar si las estaciones ya existen, sea en la tabla hash o en el grafo, y si es asi, conectarlos, si no existen, se añaden esas nuevas conexiones.
-            String texto = GUI1.g.guardarConexionLineaFinal(GUI1.nuevoArchivo, datosConexion);
+            } else if (estacion_origen instanceof Estacion) {
+                grafo.registrarNodosEnGrafo(GUI1.grafoVisual, ((Estacion)estacion_origen).getID_Estacion(), ((Estacion)estacion_destino).getID_Estacion(),Integer.parseInt(datosConexion[2]));
+            }
+            String texto = GUI1.g.guardarConexionLineaFinal(GUI1.archivoGrafo, datosConexion, GUI1.hashTable, GUI1.datosModificados);
+            
             //crear funcion para conectar los nodos
             GUI1.jLabelGuardadoAuto.setText(texto);
-            GUI1.jTextArea1.setText("Estacion Añadida:\n"+datosConexion[0]+" "+datosConexion[1]+" "+datosConexion[2]);
+            //GUI1.datosModificados = true;
+            GUI1.jTextArea1.setText("Nuevas Conexiones Añadidas:\n"+datosConexion[0]+"-"+datosConexion[1]+"\nTiempo en minutos: "+datosConexion[2]);
             this.dispose();
 
         } catch (NumberFormatException e) {
@@ -105,20 +130,21 @@ public class ConectarEstaciones extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ConectarEstaciones.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConectarEstacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ConectarEstaciones.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConectarEstacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ConectarEstaciones.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConectarEstacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConectarEstaciones.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConectarEstacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ConectarEstaciones dialog = new ConectarEstaciones(new javax.swing.JFrame(), true, null);
+                ConectarEstacion dialog = new ConectarEstacion(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

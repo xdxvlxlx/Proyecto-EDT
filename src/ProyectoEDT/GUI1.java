@@ -19,7 +19,7 @@ public class GUI1 extends javax.swing.JFrame {
     protected GestorArchivo g = new GestorArchivo();
     protected Graph grafoVisual = new SingleGraph("UrbanRoute");
     protected boolean datosModificados = false;
-    protected File nuevoArchivo = null;
+    protected File archivoGrafo = null;
     protected File archivoMaestro = null;
     /**
      * Creates new form GUI1
@@ -45,9 +45,6 @@ public class GUI1 extends javax.swing.JFrame {
         loadgrafo = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jLabelGuardadoAuto = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
@@ -84,16 +81,7 @@ public class GUI1 extends javax.swing.JFrame {
 
         jButton3.setText("eliminar estacion");
         jButton3.addActionListener(this::jButton3ActionPerformed);
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 120, -1));
-
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 120, 30));
-
-        jLabel1.setText("ingrese el ID de la");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 100, 30));
-
-        jLabel2.setText("estacion a eliminar");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 260, -1, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 260, 140, -1));
 
         jButton4.setText("guardar datos");
         jButton4.addActionListener(this::jButton4ActionPerformed);
@@ -102,11 +90,11 @@ public class GUI1 extends javax.swing.JFrame {
 
         jButton5.setText("agregar estacion");
         jButton5.addActionListener(this::jButton5ActionPerformed);
-        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 340, -1, -1));
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 140, -1));
 
         jButton6.setText("conectar estaciones");
         jButton6.addActionListener(this::jButton6ActionPerformed);
-        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 390, -1, -1));
+        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -169,15 +157,15 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void loadgrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgrafoActionPerformed
         String texto = "";
-        File grafo = g.HayDatosModificados(datosModificados, hashTable, nuevoArchivo);
-        if (!datosModificados) {    
-            grafo = g.CargarArchivo();
-        }
-        if (grafo == null) {
+        archivoGrafo = g.HayDatosModificados(datosModificados, hashTable, archivoGrafo);
+        if (archivoGrafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
             
         } else {
-            texto = g.LeerGrafo(grafo, hashTable, grafoVisual);
+            //si se cancela la carga, devuelve el archivo original, dando como resultado que se vuelve a cargar el archivo y texto pone que se cargo el archivo
+            //en lugar deberia salir que se cancelo, algun cambio hay que hacer con la variable "datosModificados"
+            //refactorizar esta parte
+            texto = g.LeerGrafo(archivoGrafo, hashTable, grafoVisual);
         }
         jTextArea1.setText(texto);
     }//GEN-LAST:event_loadgrafoActionPerformed
@@ -198,60 +186,9 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        if (jTextField1.getText().equals("")) {            
-            jTextArea1.setText("No se ha ingresado ningun ID de Estacion");
-        } else {    
-            String ID_Estacion = jTextField1.getText().toUpperCase();
-            if (hashTable.esVacia()) {
-                jTextArea1.setText("No se ha encontrado el ID "+ID_Estacion);
-            } else {
-            int hashcode = hashTable.getHashCode(ID_Estacion);
-            Object estacion = hashTable.getValue(hashcode);
-            if (estacion instanceof Nodo) {
-                estacion = hashTable.buscarEstacionEncadenada((Nodo) estacion, ID_Estacion);
-            }
-            if (estacion instanceof Estacion) {
-                if (ID_Estacion.equals(((Estacion) estacion).getID_Estacion())) {
-                jTextArea1.setText("Estacion a eliminar: "+((Estacion) estacion).getID_Estacion());
-                    int opcion = JOptionPane.showConfirmDialog(
-                    null, 
-                    "¿Estás seguro de que deseas eliminar la estación: " + ((Estacion) estacion).getNombreEstacion() + "?", 
-                    "Confirmar eliminación", 
-                    JOptionPane.YES_NO_OPTION, 
-                    JOptionPane.WARNING_MESSAGE
-                );
-                    // 2. Evaluar la respuesta del usuario
-                    if (opcion == JOptionPane.YES_OPTION) {
-                        // El usuario presionó "Sí", aquí ejecutas tu lógica para borrarla de la tabla hash y del grafo
-                        String texto = g.GuardadoAutomatico(hashTable, archivoMaestro, ID_Estacion);
-                        if (!texto.contains("Error")) {
-                            if (grafoVisual.getNode(ID_Estacion) != null) {
-                                grafoVisual.removeNode(ID_Estacion);
-                            }
-                                JOptionPane.showMessageDialog(null, "Estación eliminada con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
-                                jTextArea1.setText("Estacion "+((Estacion) estacion).getID_Estacion()+" eliminada correctamente");
-                                datosModificados = true;
-                                jLabelGuardadoAuto.setText(texto);
-                                //hashTable.eliminarEstacionDeTablaHash(ID_Estacion);
-                        }
-                    } else {
-                        // El usuario presionó "No" o cerró la ventana, no pasa nada
-                        jTextArea1.setText("Eliminacion cancelada");
-                    }
-                } else {
-                jTextArea1.setText("Ingrese un ID de estacion valido");
-                } 
-            } else {
-                jTextArea1.setText("Ingrese un ID de estacion valido");
-            }
-            }
-        }
+        EliminarEstacion dialog = new EliminarEstacion(this, true, this);
+        dialog.setVisible(true); // Muestra la ventana emergente
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
@@ -259,7 +196,7 @@ public class GUI1 extends javax.swing.JFrame {
         if (!datosModificados) {
             jTextArea1.setText("No se han ocurrido cambios");
         } else {
-        texto = g.GuardarDatos(hashTable, nuevoArchivo);
+        texto = g.GuardarDatos(hashTable, archivoGrafo);
         if (!texto.equals("Se cancelo el guardado del archivo")) {
             datosModificados = false;
         }
@@ -277,7 +214,7 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-        ConectarEstaciones dialog = new ConectarEstaciones(this, true, this);
+        ConectarEstacion dialog = new ConectarEstacion(this, true, this);
         dialog.setVisible(true); // Muestra la ventana emergente
     }//GEN-LAST:event_jButton6ActionPerformed
 
@@ -313,13 +250,10 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     javax.swing.JLabel jLabelGuardadoAuto;
     private javax.swing.JPanel jPanel1;
     javax.swing.JScrollPane jScrollPane1;
     javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loadEstaciones;
     private javax.swing.JButton loadgrafo;
     // End of variables declaration//GEN-END:variables

@@ -12,6 +12,7 @@ import org.graphstream.graph.Graph;
 import javax.swing.JOptionPane;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 /**
  *
  * @author daviel
@@ -90,7 +91,7 @@ public class GestorArchivo {
                 //     System.out.println("---ERROR: "+((Estacion)estacion_origen).getNombreEstacion()+" no coincide con el valor "+palabra[0]);
                 } if (estacion_origen == null && estacion_destino == null) {
                     System.out.println("---ERROR: ambas estaciones son null");
-                } else  if(estacion_origen == null) {
+                } else if(estacion_origen == null) {
                     System.out.println("---ERROR: la estacion origen es null");
                     grafo.registrarUnicoNodo(grafoVisual, ((Estacion)estacion_destino).getID_Estacion());
                     //deberia crear el nodo pero sin conectarlo
@@ -122,7 +123,7 @@ public class GestorArchivo {
     }
     
     
-    public String GuardarDatos(TablaHash hashTable, File nuevoArchivo) {
+    public String GuardarDatos(TablaHash hashTable, File archivoGrafo) {
         String texto = "";
         JFileChooser fileChooser = new JFileChooser();
         //fileChooser.setDialogTitle("Guardar");
@@ -131,15 +132,15 @@ public class GestorArchivo {
         int userSelection = fileChooser.showSaveDialog(null);
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
-            nuevoArchivo = fileChooser.getSelectedFile();
+            archivoGrafo = fileChooser.getSelectedFile();
 
             // Asegurar que tenga la extensión .csv
-            if (!nuevoArchivo.getName().toLowerCase().endsWith(".csv")) {
-                nuevoArchivo = new File(nuevoArchivo.getAbsolutePath() + ".csv");
+            if (!archivoGrafo.getName().toLowerCase().endsWith(".csv")) {
+                archivoGrafo = new File(archivoGrafo.getAbsolutePath() + ".csv");
             }
 
             // VALIDACIÓN: ¿El archivo ya existe? Preguntar si desea sobrescribirlo
-            if (nuevoArchivo.exists()) {
+            if (archivoGrafo.exists()) {
                 int respuesta = JOptionPane.showConfirmDialog(
                     null,
                     "El archivo ya existe. ¿Deseas sobrescribirlo?",
@@ -153,7 +154,7 @@ public class GestorArchivo {
                     return texto; // Si el usuario dice que NO, cancelamos el guardado
                 }
             }
-        try (PrintWriter pw = new PrintWriter(new FileWriter(nuevoArchivo))) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(archivoGrafo))) {
             pw.println("Estacion_Origen,Estacion_Destino,Tiempo_Minutos");
             for (int i = 0; i < hashTable.getHashTable().length; i++) {
                 Object estacion = hashTable.getValue(i);
@@ -177,48 +178,58 @@ public class GestorArchivo {
         } catch (Exception e) {
             texto = "A ocurrido un error: " + e.getClass().getName()+"\nDetalle: "+e.getMessage();
         }
-        texto = "Se ha guardado el archivo "+nuevoArchivo.getName()+" correctamente\nruta de archivo: "+nuevoArchivo.getPath();
-        System.out.println("Se ha guardado el archivo "+nuevoArchivo.getName()+" correctamente\nruta de archivo: "+nuevoArchivo.getPath());
+        texto = "Se ha guardado el archivo "+archivoGrafo.getName()+" correctamente\nruta de archivo: "+archivoGrafo.getPath();
+        System.out.println("Se ha guardado el archivo "+archivoGrafo.getName()+" correctamente\nruta de archivo: "+archivoGrafo.getPath());
         
-        } else if(nuevoArchivo == null) {
+        } else if(archivoGrafo == null) {
             texto = "Se cancelo el guardado del archivo";
         }
         return texto;
     }
     
-    public File HayDatosModificados(boolean cambios, TablaHash hashTable, File nuevoArchivo) {
-        File file = null;
+    public File HayDatosModificados(boolean cambios, TablaHash hashTable, File archivoGrafo) {
+        File archivoResultado = archivoGrafo; // Por defecto devolvemos el archivo actual
+
         if (cambios) {
             int opcion = JOptionPane.showConfirmDialog(
-            null, 
-            "Existen datos modificados. ¿Desea guardarlos antes de cargar un nuevo archivo?", 
-            "Advertencia - Datos sin guardar", 
-            JOptionPane.YES_NO_CANCEL_OPTION, 
-            JOptionPane.WARNING_MESSAGE
-        );
+                null, 
+                "Existen datos modificados. ¿Desea guardarlos antes de cargar un nuevo archivo?", 
+                "Advertencia - Datos sin guardar", 
+                JOptionPane.YES_NO_CANCEL_OPTION, 
+                JOptionPane.WARNING_MESSAGE
+            );
 
-        // 3. Evaluar la respuesta del usuario
-        if (opcion == JOptionPane.YES_OPTION) {
-            // El usuario quiere guardar: Llama a tu función de guardado
-            String texto = GuardarDatos(hashTable, nuevoArchivo); 
-            if (texto.equals("Se cancelo el guardado del archivo")) {
-                return file;
+            if (opcion == JOptionPane.YES_OPTION) {
+                // 1. Guarda los cambios en el mismo archivo que le pasaste por parámetro
+                String resultadoGuardado = GuardarDatos(hashTable, archivoGrafo); 
+
+                // Si el usuario canceló en el diálogo de guardado (por si usa un Guardar Como)
+                if (resultadoGuardado != null && resultadoGuardado.equals("Se cancelo el guardado del archivo")) {
+                    return archivoGrafo; // Retorna el archivo intacto y frena la carga
+                }
+
+                // 2. Una vez guardado, abre la ventana para cargar el nuevo archivo
+                archivoResultado = CargarArchivo();
+
+            } else if (opcion == JOptionPane.NO_OPTION) {
+                // No guarda nada, pero procede directamente a cargar el nuevo archivo
+                archivoResultado = CargarArchivo();
+
+            } else {
+                // Si elige CANCELAR (CANCEL_OPTION) o cierra la ventana (X)
+                // Se cancela todo y se devuelve el archivo intacto sin modificar
+                return archivoGrafo; 
             }
-            // Después de guardar, puedes proceder a abrir el explorador de archivos
-            file = CargarArchivo();
-            
-        } else if (opcion == JOptionPane.NO_OPTION) {
-            // El usuario NO quiere guardar, pero SÍ quiere cargar el nuevo archivo de una vez
-            file =  CargarArchivo();
-            
         } else {
-            // Si elige CANCELAR (CANCEL_OPTION) o cierra la ventana, no haces nada
-            return file; 
+            // Si NO hay cambios, salta el aviso y abre directamente la ventana para cargar el nuevo archivo
+            archivoResultado = CargarArchivo();
+            if (archivoResultado == null) { // si cancela, retorna el grafo original
+                return archivoGrafo;
+            }
         }
-        }
-        //file =  CargarArchivo();
-        return file;
-    }
+
+        return archivoResultado;
+}
     
     public String GuardadoAutomatico(TablaHash hashTable, File archivoMaestro, String ID_Estacion) {
         String texto = "";
@@ -260,8 +271,15 @@ public class GestorArchivo {
     // El 'true' en el FileWriter le indica a Java que no sobrescriba, sino que escriba al final
         String texto = "";
         try (PrintWriter pw = new PrintWriter(new FileWriter(archivoMaestro, true))) {
+            RandomAccessFile raf = new RandomAccessFile(archivoMaestro, "r");
+            raf.seek(archivoMaestro.length() - 1);
+            int ultimoByte = raf.read();
+            // Si el último carácter NO es un salto de línea (\n o \r), lo agregamos nosotros
+            if (ultimoByte != '\n' && ultimoByte != '\r') {
+                pw.println(); 
+            }
             // Escribe la nueva línea respetando el formato CSV
-            pw.println(datosEstacion[0].trim() + "," + datosEstacion[1].trim() + "," + datosEstacion[2].trim() + "," + datosEstacion[3].trim() + "," + Integer.parseInt(datosEstacion[4].trim()));
+            pw.println(datosEstacion[0] + "," + datosEstacion[1] + "," + datosEstacion[2] + "," + datosEstacion[3] + "," + Integer.parseInt(datosEstacion[4]));
             System.out.println("Línea agregada exitosamente al final del archivo.");
             texto = "Cambios realizados a "+archivoMaestro.getName();
         } catch (Exception e) {
@@ -271,17 +289,45 @@ public class GestorArchivo {
         return texto;
     }
     
-    public String guardarConexionLineaFinal(File nuevoArchivo, String[] datosConexion) {
+    public String guardarConexionLineaFinal(File archivoGrafo, String[] datosConexion, TablaHash hashTable, boolean datosModificados) {
     // El 'true' en el FileWriter le indica a Java que no sobrescriba, sino que escriba al final
         String texto = "";
-        try (PrintWriter pw = new PrintWriter(new FileWriter(nuevoArchivo, true))) {
-            // Escribe la nueva línea respetando el formato CSV
-            pw.println(datosConexion[0].trim() + "," + datosConexion[1].trim() + "," + datosConexion[2].trim());
-            System.out.println("Línea agregada exitosamente al final del archivo.");
-            texto = "Cambios realizados a "+nuevoArchivo.getName();
-        } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Error al escribir en el archivo: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-            texto = "Error: "+e.getMessage();
+        if (archivoGrafo == null) {
+            int opcion = JOptionPane.showConfirmDialog(
+            null, 
+            "No se ha creado un archivo de guardado. ¿Desea crearlo?", 
+            "Advertencia - Archivo no creado", 
+            JOptionPane.YES_NO_OPTION, 
+            JOptionPane.WARNING_MESSAGE
+        );
+            if (opcion == JOptionPane.YES_OPTION) {
+            // El usuario quiere guardar: Llama a tu función de guardado
+            GuardarDatos(hashTable, archivoGrafo); 
+            if (texto.equals("Se cancelo el guardado del archivo")) {
+                datosModificados = true;
+                return texto;
+            } else {
+                datosModificados = true;
+            }
+        }
+        } else {
+            try (PrintWriter pw = new PrintWriter(new FileWriter(archivoGrafo, true))) {
+                RandomAccessFile raf = new RandomAccessFile(archivoGrafo, "r");
+                raf.seek(archivoGrafo.length() - 1);
+                int ultimoByte = raf.read();
+                // Si el último carácter NO es un salto de línea (\n o \r), lo agregamos nosotros
+                if (ultimoByte != '\n' && ultimoByte != '\r') {
+                    pw.println(); 
+                }
+                // Escribe la nueva línea respetando el formato CSV
+                pw.println(datosConexion[0].trim() + "," + datosConexion[1].trim() + "," + datosConexion[2].trim());
+                System.out.println("Línea agregada exitosamente al final del archivo.");
+                texto = "Cambios realizados a "+archivoGrafo.getName();
+                
+            } catch (Exception e) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Error al escribir en el archivo: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                texto = "Error: "+e.getMessage();
+            }
         }
         return texto;
     }

@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package ProyectoEDT;
-import java.io.File;
 /**
  *
  * @author ile2
@@ -79,12 +78,20 @@ public class AgregarEstacion extends javax.swing.JDialog {
         // TODO add your handling code here:
         //ID_Estacion,Nombre,Linea,Zona,Capacidad_Pasajeros_Hora
         String[] datosEstacion = jTextField1.getText().split(",");
+        datosEstacion[0] = datosEstacion[0].trim();
+        datosEstacion[1] = datosEstacion[1].trim();
+        datosEstacion[2] = datosEstacion[2].trim();
+        datosEstacion[3] = datosEstacion[3].trim();
+        datosEstacion[4] = datosEstacion[4].trim();
         if (datosEstacion.length < 5) {
             javax.swing.JOptionPane.showMessageDialog(this, "Por favor completa todos los campos.", "Campos vacíos", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
             String texto = GUI1.g.guardarEstacionLineaFinal(GUI1.archivoMaestro, datosEstacion);
+            Estacion nuevaEstacion = new Estacion(datosEstacion[0], datosEstacion[1], datosEstacion[2], datosEstacion[3], Integer.parseInt(datosEstacion[4]));
+            int hashcode = GUI1.hashTable.getHashCode(datosEstacion[0]);
+            GUI1.hashTable.insertar(nuevaEstacion, hashcode);
             GUI1.jLabelGuardadoAuto.setText(texto);
             GUI1.jTextArea1.setText("Estacion Añadida:\n"+datosEstacion[0]+" "+datosEstacion[1]+" "+datosEstacion[2]+" "+datosEstacion[3]+" "+datosEstacion[4]);
             this.dispose();

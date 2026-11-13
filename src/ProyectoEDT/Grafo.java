@@ -16,6 +16,7 @@ public class Grafo {
     public Graph registrarNodosEnGrafo(Graph grafoVisual, String estacion_origen, String estacion_destino, int tiempo_minutos) {
         System.setProperty("org.graphstream.ui", "swing");
         String idArista = estacion_origen + "-" + estacion_destino;
+        String idArista2 = estacion_destino + "-" + estacion_origen;
 
         // 1. Asegurar el nodo de origen (si no existe, lo crea)
         if (grafoVisual.getNode(estacion_origen) == null) {
@@ -27,11 +28,35 @@ public class Grafo {
             grafoVisual.addNode(estacion_destino).setAttribute("ui.label", estacion_destino);
         }
 
-        // 3. Crear la arista que los conecta (evitando duplicar la arista si ya existe)
-        if (grafoVisual.getEdge(idArista) == null) {
+        // 3. Buscar si la arista ya existe (en cualquiera de las dos direcciones)
+        Edge aristaExistente = grafoVisual.getEdge(idArista);
+        if (aristaExistente == null) {
+            aristaExistente = grafoVisual.getEdge(idArista2);
+        }
+
+        if (aristaExistente != null) {
+            // La arista ya existe, verificamos su tiempo actual
+            int tiempoActual = 0;
+            if (aristaExistente.hasAttribute("weight")) {
+                tiempoActual = (int) aristaExistente.getNumber("weight");
+            }
+
+            // Si el tiempo ingresado es diferente, lo actualizamos
+            if (tiempoActual != tiempo_minutos) {
+                aristaExistente.setAttribute("weight", tiempo_minutos);
+                aristaExistente.setAttribute("ui.label", tiempo_minutos);
+                System.out.println("La conexión entre " + estacion_origen + " y " + estacion_destino + 
+                                   " ya existía. Se actualizó el tiempo de " + tiempoActual + " a " + tiempo_minutos + " min.");
+            } else {
+                System.out.println("La conexión ya existe y el tiempo es el mismo (" + tiempo_minutos + " min).");
+            }
+
+        } else {
+            // Si no existe ninguna de las dos, creamos la nueva arista
             Edge arista = grafoVisual.addEdge(idArista, estacion_origen, estacion_destino);
             arista.setAttribute("weight", tiempo_minutos);
             arista.setAttribute("ui.label", tiempo_minutos);
+            System.out.println("Se creó una nueva conexión entre " + estacion_origen + " y " + estacion_destino);
         }
         String styleSheet = 
         // Estilo global del contenedor

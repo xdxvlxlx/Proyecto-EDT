@@ -102,11 +102,35 @@ public class GestorArchivo {
                 } else if (estacion_origen instanceof Estacion) {
                     NodoAdyacente adyacente = new NodoAdyacente((Estacion) estacion_destino, Integer.parseInt(palabra[2]));
                     System.out.println("Estacion: "+((Estacion) estacion_origen).getNombreEstacion()+" tiene adyacente a "+((Estacion)estacion_destino).getNombreEstacion()+" con un peso de "+palabra[2]);
-                    if (((Estacion) estacion_destino).getPrimerAdyacente() != null) {
+                    if (((Estacion) estacion_destino).getPrimerAdyacente() != null || ((Estacion) estacion_origen).getPrimerAdyacente() != null) {
                         NodoAdyacente SiguienteAdyacente = new NodoAdyacente((Estacion) estacion_origen, Integer.parseInt(palabra[2]));
+                        if (((Estacion) estacion_destino).getPrimerAdyacente() != null && ((Estacion) estacion_origen).getPrimerAdyacente() != null) { //caso cuando ambas estaciones tienen nodos adyacentes
+                            NodoAdyacente AdyacenteAux = ((Estacion) estacion_origen).getPrimerAdyacente();
+                            while (AdyacenteAux != null) {
+                            if (AdyacenteAux.getSiguienteAdyacente() == null) {
+                                AdyacenteAux.setSiguienteAdyacente(adyacente);
+                                //((Estacion)estacion_destino).setPrimerAdyacente(SiguienteAdyacente);
+                                break;
+                            }
+                            AdyacenteAux = AdyacenteAux.getSiguienteAdyacente();
+                        }
+                        }
+                        else if (((Estacion) estacion_destino).getPrimerAdyacente() == null) {
+                        NodoAdyacente AdyacenteAux = ((Estacion) estacion_origen).getPrimerAdyacente();
+                        while (AdyacenteAux != null) {
+                            if (AdyacenteAux.getSiguienteAdyacente() == null) {
+                                AdyacenteAux.setSiguienteAdyacente(adyacente);
+                                ((Estacion)estacion_destino).setPrimerAdyacente(SiguienteAdyacente);
+                                break;
+                            }
+                            AdyacenteAux = AdyacenteAux.getSiguienteAdyacente();
+                        }
+                    }
+                        else if (((Estacion) estacion_origen).getPrimerAdyacente() == null) {
                         ((Estacion) estacion_destino).getPrimerAdyacente().setSiguienteAdyacente(SiguienteAdyacente);
                         System.out.println("La estacion destino "+((Estacion) estacion_destino).getNombreEstacion()+" contiene un primer adyacente que es "+((Estacion)estacion_destino).getPrimerAdyacente().getEstacionDestino().getNombreEstacion()+ ". por lo que se asigna al siguiente despues del primero");    
                         ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
+                        }
                     } else {
                         ((Estacion) estacion_origen).setPrimerAdyacente(adyacente);
                     }
@@ -161,18 +185,43 @@ public class GestorArchivo {
                 if (estacion instanceof Nodo) {
                     Nodo nodoActual = (Nodo)estacion;
                     while (nodoActual != null) {
+                        boolean entraenbucle = false;
                         if (nodoActual.getEstacion().getPrimerAdyacente() == null) {
                             System.out.println("en la estacion actual: "+nodoActual.getEstacion().getID_Estacion()+ " no contiene un siguiente, por lo que se omite y no se guarda");
                             nodoActual = nodoActual.getNext();
-                        } else {
+                        } else { 
+                            NodoAdyacente AdyacenteAux = nodoActual.getEstacion().getPrimerAdyacente();
+                            while (AdyacenteAux.getSiguienteAdyacente() != null) {
+                                pw.println(nodoActual.getEstacion().getID_Estacion() + "," + AdyacenteAux.getEstacionDestino().getID_Estacion() + "," + AdyacenteAux.getTiempo_Minutos());
+                                System.out.println(nodoActual.getEstacion().getID_Estacion() + "," + AdyacenteAux.getEstacionDestino().getID_Estacion() + "," + AdyacenteAux.getTiempo_Minutos());
+                                entraenbucle = true;
+                                AdyacenteAux = AdyacenteAux.getSiguienteAdyacente();
+                            }
                         System.out.println(nodoActual.getEstacion().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getTiempo_Minutos());
-                        pw.println(nodoActual.getEstacion().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getTiempo_Minutos());
+                        if (!entraenbucle) {
+                            pw.println(nodoActual.getEstacion().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," + nodoActual.getEstacion().getPrimerAdyacente().getTiempo_Minutos());
+                        }
                         nodoActual = nodoActual.getNext();
                         }
                     }
                 } else if (estacion instanceof Estacion) {
+                    boolean entraenbucle = false;
                     Estacion estacionActual = (Estacion) estacion;
-                    pw.println(estacionActual.getID_Estacion() + "," + estacionActual.getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," + estacionActual.getPrimerAdyacente().getTiempo_Minutos());
+                    if (estacionActual.getPrimerAdyacente() == null) {
+                            System.out.println("en la estacion actual: "+estacionActual.getID_Estacion()+ " no contiene un siguiente, por lo que se omite y no se guarda");
+                        } else { 
+                            NodoAdyacente AdyacenteAux = estacionActual.getPrimerAdyacente();
+                            while (AdyacenteAux.getSiguienteAdyacente() != null) {
+                                pw.println(estacionActual.getID_Estacion() + "," + AdyacenteAux.getEstacionDestino().getID_Estacion() + "," + AdyacenteAux.getTiempo_Minutos());
+                                System.out.println(estacionActual.getID_Estacion() + "," + AdyacenteAux.getEstacionDestino().getID_Estacion() + "," + AdyacenteAux.getTiempo_Minutos());
+                                entraenbucle = true;
+                                AdyacenteAux = AdyacenteAux.getSiguienteAdyacente();
+                            }
+                        System.out.println(estacionActual.getID_Estacion() + "," + estacionActual.getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," + estacionActual.getPrimerAdyacente().getTiempo_Minutos());
+                        if (!entraenbucle) {
+                            pw.println(estacionActual.getID_Estacion() + "," + estacionActual.getPrimerAdyacente().getEstacionDestino().getID_Estacion() + "," +estacionActual.getPrimerAdyacente().getTiempo_Minutos());
+                        }
+                    }
                 }
             }
         } catch (Exception e) {

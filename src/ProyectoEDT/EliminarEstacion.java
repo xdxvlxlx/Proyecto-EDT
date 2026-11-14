@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author sl003
+ * @author daviel
  */
 public class EliminarEstacion extends javax.swing.JDialog {
     GUI1 GUI1;
@@ -19,6 +19,7 @@ public class EliminarEstacion extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.GUI1 = gui1;
+        this.setTitle("Eliminar Estacion");
         setLocationRelativeTo(parent);
     }
 
@@ -92,23 +93,17 @@ public class EliminarEstacion extends javax.swing.JDialog {
                     JOptionPane.YES_NO_OPTION, 
                     JOptionPane.WARNING_MESSAGE
                 );
-                    // 2. Evaluar la respuesta del usuario
                     if (opcion == JOptionPane.YES_OPTION) {
-                        // El usuario presionó "Sí", aquí ejecutas tu lógica para borrarla de la tabla hash y del grafo
                         String texto = GUI1.g.GuardadoAutomatico(GUI1.hashTable, GUI1.archivoMaestro, ID_Estacion);
                         if (!texto.contains("Error")) {
                             if (GUI1.grafoVisual.getNode(ID_Estacion) != null) {
                                 GUI1.grafoVisual.removeNode(ID_Estacion);
                             }
                                 JOptionPane.showMessageDialog(null, "Estación \""+((Estacion) estacion).getID_Estacion()+"\" eliminada con éxito.", "Información", JOptionPane.INFORMATION_MESSAGE);
-                                //GUI1.jTextArea1.setText("Estacion "+((Estacion) estacion).getID_Estacion()+" eliminada correctamente");
-                                //GUI1.datosModificados = true;
                                 GUI1.jLabelGuardadoAuto.setText(texto);
-                                //hashTable.eliminarEstacionDeTablaHash(ID_Estacion);
                                 this.dispose();
                         }
                     } else {
-                        // El usuario presionó "No" o cerró la ventana, no pasa nada
                         GUI1.jTextArea1.setText("Eliminacion cancelada");
                         this.dispose();
                     }
@@ -117,7 +112,6 @@ public class EliminarEstacion extends javax.swing.JDialog {
                 } 
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this, "Ingrese un ID de estacion valido.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
-                return;
             }
             }
         }

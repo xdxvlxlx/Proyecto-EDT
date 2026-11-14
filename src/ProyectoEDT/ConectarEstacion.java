@@ -5,7 +5,7 @@
 package ProyectoEDT;
 /**
  *
- * @author ile2
+ * @author daviel
  */
 public class ConectarEstacion extends javax.swing.JDialog {
     private GUI1 GUI1; 
@@ -16,7 +16,8 @@ public class ConectarEstacion extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.GUI1 = gui1;
-        setLocationRelativeTo(parent);   // Centra la ventana en pantalla
+        this.setTitle("Conectar Estaciones");
+        setLocationRelativeTo(parent);
     }
 
     /**
@@ -90,26 +91,26 @@ public class ConectarEstacion extends javax.swing.JDialog {
             } if (estacion_destino instanceof Nodo) {
                 estacion_destino = GUI1.hashTable.buscarEstacionEncadenada((Nodo) estacion_destino, datosConexion[1]);
             } if (estacion_origen == null && estacion_destino == null) {
-                System.out.println("---ERROR: ambas estaciones son null");
+                //System.out.println("---ERROR: ambas estaciones son null");
                 javax.swing.JOptionPane.showMessageDialog(this, "Ambas Estaciones no existen", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             } else if(estacion_origen == null) {
-                System.out.println("---ERROR: la estacion origen es null");
+                //System.out.println("---ERROR: la estacion origen es null");
                 javax.swing.JOptionPane.showMessageDialog(this, "La estacion origen no existe", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             } else if (estacion_destino == null) { //destino es null, entonces origen es un nodo que no conecta a nada
-                System.out.println("---ERROR: la estacion destino es null");
+                //System.out.println("---ERROR: la estacion destino es null");
                 javax.swing.JOptionPane.showMessageDialog(this, "La estacion destino no existe", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
                 
             } else if (estacion_origen instanceof Estacion) {
                 grafo.registrarNodosEnGrafo(GUI1.grafoVisual, ((Estacion)estacion_origen).getID_Estacion(), ((Estacion)estacion_destino).getID_Estacion(),Integer.parseInt(datosConexion[2]));
             }
-            String texto = GUI1.g.guardarConexionLineaFinal(GUI1.archivoGrafo, datosConexion, GUI1.hashTable, GUI1.datosModificados);
+            String texto = GUI1.g.guardarConexionLineaFinal(GUI1.archivoGrafo, datosConexion, GUI1.hashTable);
             
-            //crear funcion para conectar los nodos
+            
             GUI1.jLabelGuardadoAuto.setText(texto);
-            //GUI1.datosModificados = true;
+            
             GUI1.jTextArea1.setText("Nuevas Conexiones Añadidas:\n\t"+datosConexion[0]+"-"+datosConexion[1]+"\nTiempo en minutos: "+datosConexion[2]);
             this.dispose();
 

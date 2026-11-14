@@ -18,18 +18,31 @@ public class NodoAdyacente {
         this.Tiempo_Minutos = Tiempo_Minutos;
         this.SiguienteAdyacente = null;
     }
-    
+    /**
+     * 
+     * @return la estacion destino
+     */
     public Estacion getEstacionDestino() {
         return this.Estacion_Destino;
     }
-    
+    /**
+     * 
+     * @return el tiempo en minutos
+     */
     public int getTiempo_Minutos() {
         return this.Tiempo_Minutos;
     }
-    
+    /**
+     * 
+     * @return el siguiente adyacente
+     */
     public NodoAdyacente getSiguienteAdyacente() {
         return this.SiguienteAdyacente;
     }
+    /**
+     * 
+     * @param SiguienteAdyacente set el siguienteAdyacente 
+     */
     public void setSiguienteAdyacente(NodoAdyacente SiguienteAdyacente) {
         this.SiguienteAdyacente = SiguienteAdyacente;
     }

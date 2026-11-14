@@ -12,7 +12,14 @@ import org.graphstream.ui.view.Viewer;
  * @author daviel
  */
 public class Grafo {
-    
+    /**
+     * 
+     * @param grafoVisual el grafo visual que se mostrara
+     * @param estacion_origen el ID de la estacion origen
+     * @param estacion_destino el ID de la estacion destino
+     * @param tiempo_minutos el tiempo en minutos entre las dos estaciones
+     * @return el grafo visual con los nodos conectados
+     */
     public Graph registrarNodosEnGrafo(Graph grafoVisual, String estacion_origen, String estacion_destino, int tiempo_minutos) {
         System.setProperty("org.graphstream.ui", "swing");
         String idArista = estacion_origen + "-" + estacion_destino;
@@ -45,10 +52,9 @@ public class Grafo {
             if (tiempoActual != tiempo_minutos) {
                 aristaExistente.setAttribute("weight", tiempo_minutos);
                 aristaExistente.setAttribute("ui.label", tiempo_minutos);
-                System.out.println("La conexión entre " + estacion_origen + " y " + estacion_destino + 
-                                   " ya existía. Se actualizó el tiempo de " + tiempoActual + " a " + tiempo_minutos + " min.");
+                //System.out.println("La conexión entre " + estacion_origen + " y " + estacion_destino + " ya existía. Se actualizó el tiempo de " + tiempoActual + " a " + tiempo_minutos + " min.");
             } else {
-                System.out.println("La conexión ya existe y el tiempo es el mismo (" + tiempo_minutos + " min).");
+                //System.out.println("La conexión ya existe y el tiempo es el mismo (" + tiempo_minutos + " min).");
             }
 
         } else {
@@ -56,7 +62,7 @@ public class Grafo {
             Edge arista = grafoVisual.addEdge(idArista, estacion_origen, estacion_destino);
             arista.setAttribute("weight", tiempo_minutos);
             arista.setAttribute("ui.label", tiempo_minutos);
-            System.out.println("Se creó una nueva conexión entre " + estacion_origen + " y " + estacion_destino);
+            //System.out.println("Se creó una nueva conexión entre " + estacion_origen + " y " + estacion_destino);
         }
         String styleSheet = 
         // Estilo global del contenedor
@@ -92,7 +98,12 @@ public class Grafo {
     grafoVisual.setAttribute("ui.stylesheet", styleSheet);
         return grafoVisual;
     }
-    
+    /**
+     * 
+     * @param grafoVisual el grafo visual que se mostrada
+     * @param ID_Nodo el ID de la estacion que se va a registrar
+     * @return el grafo visual con el unico nodo registrado
+     */
     public Graph registrarUnicoNodo(Graph grafoVisual, String ID_Nodo) {
         System.setProperty("org.graphstream.ui", "swing");
         if (grafoVisual.getNode(ID_Nodo) == null) {
@@ -122,7 +133,10 @@ public class Grafo {
         return grafoVisual;
     }
     
-
+    /**
+     * 
+     * @param grafoVisual el grafo visual que se mostrara
+     */
     public void mostrarGrafo(Graph grafoVisual) {
         Viewer viewer = grafoVisual.display();
         viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);

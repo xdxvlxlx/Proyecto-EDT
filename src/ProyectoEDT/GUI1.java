@@ -6,7 +6,6 @@ package ProyectoEDT;
 import java.io.File;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
-import javax.swing.JOptionPane;
 /**
  *
  * @author daviel
@@ -26,6 +25,7 @@ public class GUI1 extends javax.swing.JFrame {
      */
     public GUI1() {
         initComponents();
+        this.setTitle("UrbanRoute");
     }
 
     /**
@@ -53,12 +53,13 @@ public class GUI1 extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jTextFieldDFS_Dijkstra = new javax.swing.JTextField();
         jButton9 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        loadEstaciones.setText("cargar Estaciones");
+        loadEstaciones.setText("Cargar Estaciones");
         loadEstaciones.addActionListener(this::loadEstacionesActionPerformed);
         jPanel1.add(loadEstaciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
@@ -67,59 +68,63 @@ public class GUI1 extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 190, 510, 380));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, 430, 270));
 
-        jButton1.setText("imprimir tabla hash");
+        jButton1.setText("Mostrar Tabla Hash");
         jButton1.addActionListener(this::jButton1ActionPerformed);
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 20, -1, -1));
 
-        loadgrafo.setText("cargar Grafo");
+        loadgrafo.setText("Cargar Grafo");
         loadgrafo.setToolTipText("");
         loadgrafo.addActionListener(this::loadgrafoActionPerformed);
         jPanel1.add(loadgrafo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
 
-        jButton2.setText("mostrar grafo");
+        jButton2.setText("Mostrar Grafo");
         jButton2.setToolTipText("");
         jButton2.addActionListener(this::jButton2ActionPerformed);
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 20, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 60, -1, -1));
 
-        jButton3.setText("eliminar estacion");
+        jButton3.setText("Eliminar Estacion");
         jButton3.addActionListener(this::jButton3ActionPerformed);
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 160, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
 
-        jButton4.setText("guardar datos");
+        jButton4.setText("Guardar Datos");
         jButton4.addActionListener(this::jButton4ActionPerformed);
-        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
         jPanel1.add(jLabelGuardadoAuto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 570, -1, -1));
 
-        jButton5.setText("agregar estacion");
+        jButton5.setText("Agregar Estacion");
         jButton5.addActionListener(this::jButton5ActionPerformed);
-        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, 140, -1));
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, -1, -1));
 
-        jButton6.setText("conectar estaciones");
+        jButton6.setText("Conectar Estaciones");
         jButton6.addActionListener(this::jButton6ActionPerformed);
-        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, -1, -1));
+        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, -1, -1));
 
         jButton7.setText("Eliminar Conexiones");
         jButton7.addActionListener(this::jButton7ActionPerformed);
-        jPanel1.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, -1, -1));
+        jPanel1.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, -1, -1));
 
         jButton8.setText("Utilizar Dijkstra");
         jButton8.addActionListener(this::jButton8ActionPerformed);
-        jPanel1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 70, -1, -1));
+        jPanel1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 210, -1, -1));
 
         jTextFieldDFS_Dijkstra.addActionListener(this::jTextFieldDFS_DijkstraActionPerformed);
-        jPanel1.add(jTextFieldDFS_Dijkstra, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 110, 140, 40));
+        jPanel1.add(jTextFieldDFS_Dijkstra, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 250, 140, 40));
 
         jButton9.setText("Utilizar DFS");
         jButton9.addActionListener(this::jButton9ActionPerformed);
-        jPanel1.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 130, -1));
+        jPanel1.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 210, 130, -1));
+
+        jLabel1.setFont(new java.awt.Font("Open Sans Condensed ExtraBold", 0, 48)); // NOI18N
+        jLabel1.setText("UrbanRoute");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 20, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,14 +138,12 @@ public class GUI1 extends javax.swing.JFrame {
         jLabelGuardadoAuto.setText("");
         g = new GestorArchivo();
         String texto = "";
-        //File dict_estaciones = g.HayDatosModificados(datosModificados, hashTable, nuevoArchivo);
         
         archivoMaestro = g.CargarArchivo();
         if (archivoMaestro == null) {
             texto = "Se ha cancelado la carga del archivo de Estaciones";
         } else {
             texto = g.LeerEstacion(archivoMaestro, hashTable);
-            //texto = "Se ha cargado el dataset de Estaciones";
             jLabelGuardadoAuto.setText(archivoMaestro.getName()+ " cargado");
         }
         jTextArea1.setText(texto);
@@ -178,15 +181,12 @@ public class GUI1 extends javax.swing.JFrame {
     private void loadgrafoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadgrafoActionPerformed
         jLabelGuardadoAuto.setText("");
         String texto = "";
-        //archivoGrafo = g.HayDatosModificados(datosModificados, hashTable, archivoGrafo);
         archivoGrafo = g.CargarArchivo();
         if (archivoGrafo == null) {
             texto = "Se ha cancelado la carga del archivo grafo";
             
         } else {
-            //si se cancela la carga, devuelve el archivo original, dando como resultado que se vuelve a cargar el archivo y texto pone que se cargo el archivo
-            //en lugar deberia salir que se cancelo, algun cambio hay que hacer con la variable "datosModificados"
-            //refactorizar esta parte
+
             texto = g.LeerGrafo(archivoGrafo, hashTable, grafoVisual);
             jLabelGuardadoAuto.setText(archivoGrafo.getName()+ " cargado");
         }
@@ -222,11 +222,8 @@ public class GUI1 extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         jLabelGuardadoAuto.setText("");
-        String texto = ""; //cambiar el como funciona los datosModificados
-        //if (!datosModificados) {
-        //    jTextArea1.setText("No se han ocurrido cambios");
-        //} else {
-        texto = g.GuardarDatos(hashTable, archivoGrafo); //refactorizar la funcion GuardarDatos, porque no esta guardando bien xdxdxd
+        String texto = ""; 
+        texto = g.GuardarDatos(hashTable, archivoGrafo);
         if (!texto.equals("Se cancelo el guardado del archivo")) {
             datosModificados = false;
         }
@@ -240,7 +237,7 @@ public class GUI1 extends javax.swing.JFrame {
         jLabelGuardadoAuto.setText("");
         if (archivoMaestro != null){    
             AgregarEstacion dialog = new AgregarEstacion(this, true, this);
-            dialog.setVisible(true); // Muestra la ventana emergente
+            dialog.setVisible(true);
         } else {
             jTextArea1.setText("No se ha cargado el archivo de Estacion");
         }
@@ -251,7 +248,7 @@ public class GUI1 extends javax.swing.JFrame {
         jLabelGuardadoAuto.setText("");
         if (archivoGrafo != null){    
             ConectarEstacion dialog = new ConectarEstacion(this, true, this);
-            dialog.setVisible(true); // Muestra la ventana emergente
+            dialog.setVisible(true);
         } else {
             jTextArea1.setText("No se ha cargado el archivo de Grafo");
         }
@@ -262,7 +259,7 @@ public class GUI1 extends javax.swing.JFrame {
         jLabelGuardadoAuto.setText("");
         if (archivoGrafo != null){    
             EliminarConexion dialog = new EliminarConexion(this, true, this);
-            dialog.setVisible(true); // Muestra la ventana emergente
+            dialog.setVisible(true);
         } else {
             jTextArea1.setText("No se ha cargado el archivo de Grafo");
         }
@@ -346,6 +343,7 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JLabel jLabel1;
     javax.swing.JLabel jLabelGuardadoAuto;
     private javax.swing.JPanel jPanel1;
     javax.swing.JScrollPane jScrollPane1;

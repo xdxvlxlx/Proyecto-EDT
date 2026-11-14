@@ -19,6 +19,7 @@ public class EliminarConexion extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.GUI1 = gui1;
+        this.setTitle("Eliminar Conexiones");
         setLocationRelativeTo(parent);
     }
 
@@ -71,7 +72,6 @@ public class EliminarConexion extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        // 1. Extraemos y limpiamos los textos de los JTextField;
         String[] datosConexion = jTextField1.getText().toUpperCase().split(",");
         if (datosConexion.length != 2) {
             javax.swing.JOptionPane.showMessageDialog(this, "Por favor Ingrese Valores Validos.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -90,19 +90,19 @@ public class EliminarConexion extends javax.swing.JDialog {
             } if (estacion_destino instanceof Nodo) {
                 estacion_destino = GUI1.hashTable.buscarEstacionEncadenada((Nodo) estacion_destino, datosConexion[1]);
             } if (estacion_origen == null && estacion_destino == null) {
-                System.out.println("---ERROR: ambas estaciones son null");
+                //System.out.println("---ERROR: ambas estaciones son null");
                 javax.swing.JOptionPane.showMessageDialog(this, "Ambas Estaciones no existen", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             } else if(estacion_origen == null) {
-                System.out.println("---ERROR: la estacion origen es null");
+                //System.out.println("---ERROR: la estacion origen es null");
                 javax.swing.JOptionPane.showMessageDialog(this, "La estacion origen no existe", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             } else if (estacion_destino == null) { //destino es null, entonces origen es un nodo que no conecta a nada
-                System.out.println("---ERROR: la estacion destino es null");
+                //System.out.println("---ERROR: la estacion destino es null");
                 javax.swing.JOptionPane.showMessageDialog(this, "La estacion destino no existe", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
-        // 3. Verificamos si tiene adyacentes
+            //verificar si tiene adyacentes
         NodoAdyacente actual = ((Estacion)estacion_origen).getPrimerAdyacente();
         if (actual == null) {
             javax.swing.JOptionPane.showMessageDialog(null, 
@@ -114,12 +114,12 @@ public class EliminarConexion extends javax.swing.JDialog {
 
         boolean encontrada = false;
 
-        // 4. Caso especial: La conexión a eliminar es la primera de la lista
+        //caso en donde la conexión a eliminar es la primera de la lista
         if (actual.getEstacionDestino().getID_Estacion().equalsIgnoreCase(datosConexion[1])) {
             ((Estacion)estacion_origen).setPrimerAdyacente(actual.getSiguienteAdyacente()); // Cambia a .getNext() si así lo nombraste
             encontrada = true;
         } else {
-            // Buscar en el resto de la lista enlazada de adyacentes
+            // Buscar en el resto de los nodos encadenados
             NodoAdyacente anterior = actual;
             actual = actual.getSiguienteAdyacente();
 
@@ -133,28 +133,21 @@ public class EliminarConexion extends javax.swing.JDialog {
                 actual = actual.getSiguienteAdyacente();
             }
         }
-
-        // 5. Notificar el resultado al usuario
+        
         if (encontrada) {
             String idArista = datosConexion[0] + "-" + datosConexion[1];
             String idArista2 = datosConexion[1] + "-" + datosConexion[0];
 
-            boolean encontradaVisualmente = false;
-
-            // 1. Verificamos y removemos la primera dirección si existe
             if (GUI1.grafoVisual.getEdge(idArista) != null) {
                 GUI1.grafoVisual.removeEdge(idArista);
-                encontradaVisualmente = true;
             }
 
-            // 2. Verificamos y removemos la dirección inversa si existe
             if (GUI1.grafoVisual.getEdge(idArista2) != null) {
                 GUI1.grafoVisual.removeEdge(idArista2);
-                encontradaVisualmente = true;
            }
             String texto = "¡Conexión eliminada con éxito: " + datosConexion[0] + " -> " + datosConexion[1] + "!";
             GUI1.jTextArea1.setText(texto);
-            GUI1.g.GuardarDatos(GUI1.hashTable, GUI1.archivoGrafo);
+            //GUI1.g.GuardarDatos(GUI1.hashTable, GUI1.archivoGrafo);
             GUI1.jLabelGuardadoAuto.setText("Cambios guardados en "+GUI1.archivoGrafo.getName());
             this.dispose();
             

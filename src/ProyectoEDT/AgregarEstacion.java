@@ -4,11 +4,10 @@
  */
 package ProyectoEDT;
 
-import javax.swing.JOptionPane;
 
 /**
  *
- * @author ile2
+ * @author daviel
  */
 public class AgregarEstacion extends javax.swing.JDialog {
     private GUI1 GUI1;
@@ -18,8 +17,9 @@ public class AgregarEstacion extends javax.swing.JDialog {
     public AgregarEstacion(java.awt.Frame parent, boolean modal, GUI1 gui1) {
         super(parent, modal);
         initComponents();
-        this.GUI1 = gui1; // Guardamos la referencia
-        setLocationRelativeTo(parent);   // Centra la ventana en pantalla
+        this.GUI1 = gui1;
+        this.setTitle("Agregar Estacion");
+        setLocationRelativeTo(parent);
     }
 
     /**

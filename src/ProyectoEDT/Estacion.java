@@ -14,8 +14,11 @@ public class Estacion {
     private String Linea;
     private String Zona;
     private int Capacidad_Pasajeros_Hora;
-    private Estacion NextVertice;
     private NodoAdyacente PrimerAdyacente;
+    //Nuevos atributos para el funcionamiento de Dijkstra
+    private int distancia = Integer.MAX_VALUE;
+    private boolean visitado = false;
+    private Estacion predecesor = null;
             
     public Estacion(String ID_Estacion, String Nombre, String Linea, String Zona, int Capacidad_Pasajeros_Hora) {
         this.ID_Estacion = ID_Estacion;
@@ -23,7 +26,6 @@ public class Estacion {
         this.Linea = Linea;
         this.Zona = Zona;
         this.Capacidad_Pasajeros_Hora = Capacidad_Pasajeros_Hora;
-        this.NextVertice = null;
         this.PrimerAdyacente = null;
     }
     
@@ -55,4 +57,27 @@ public class Estacion {
         this.PrimerAdyacente = PrimerAdyacente;
     }
     
+    public int getDistancia() {
+        return distancia;
+    }
+
+    public void setDistancia(int distancia) {
+        this.distancia = distancia;
+    }
+
+    public boolean isVisitado() {
+        return visitado;
+    }
+
+    public void setVisitado(boolean visitado) {
+        this.visitado = visitado;
+    }
+
+    public Estacion getPredecesor() {
+        return predecesor;
+    }
+
+    public void setPredecesor(Estacion predecesor) {
+        this.predecesor = predecesor;
+    }
 }

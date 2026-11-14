@@ -378,5 +378,227 @@ public class GestorArchivo {
         }
         return texto;
     }
+    public String ejecutarDijkstra(String origenStr, String destinoStr, TablaHash hashTable) {
+        String texto = "";
+        // 1. Validaciones básicas
+        if (origenStr.isEmpty() || destinoStr.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Debe ingresar la estación de origen y de destino.", "Campos vacíos", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return texto;
+        }
+        String origenLimpio = origenStr.trim();
+        String destinoLimpio = destinoStr.trim();
+
+        // 2. BÚSQUEDA SEGURA DE LAS ESTACIONES USANDO TU TABLA HASH Y NODOS ENCADENADOS
+        Estacion estacion_origen = null;
+        Estacion estacion_destino = null;
+
+        int key_origen = hashTable.getHashCode(origenLimpio);
+        int key_destino = hashTable.getHashCode(destinoLimpio);
+
+        Object objOrigen = hashTable.getValue(key_origen);
+        Object objDestino = hashTable.getValue(key_destino);
+
+        // Buscar origen
+        if (objOrigen instanceof Nodo) {
+            estacion_origen = hashTable.buscarEstacionEncadenada((Nodo) objOrigen, origenLimpio);
+        } else if (objOrigen instanceof Estacion) {
+            Estacion est = (Estacion) objOrigen;
+            if (est.getID_Estacion().equalsIgnoreCase(origenLimpio)) {
+                estacion_origen = est;
+            }
+        }
+
+        // Buscar destino
+        if (objDestino instanceof Nodo) {
+            estacion_destino = hashTable.buscarEstacionEncadenada((Nodo) objDestino, destinoLimpio);
+        } else if (objDestino instanceof Estacion) {
+            Estacion est = (Estacion) objDestino;
+            if (est.getID_Estacion().equalsIgnoreCase(destinoLimpio)) {
+                estacion_destino = est;
+            }
+        }
+
+        // Validaciones de existencia de los objetos encontrados
+        if (estacion_origen == null && estacion_destino == null) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Ambas estaciones no existen en el sistema.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return texto;
+        } else if (estacion_origen == null) {
+            javax.swing.JOptionPane.showMessageDialog(null, "La estación de origen '" + origenLimpio + "' no existe.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return texto;
+        } else if (estacion_destino == null) {
+            javax.swing.JOptionPane.showMessageDialog(null, "La estación de destino '" + destinoLimpio + "' no existe.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return texto;
+        }
+
+        // 2. INICIALIZACIÓN: Recorrer toda la Tabla Hash para resetear valores
+        Object[] buckets = hashTable.getHashTable(); // O el método que uses para acceder al arreglo interno de la tabla hash
+        for (int i = 0; i < buckets.length; i++) {
+            Object obj = hashTable.getValue(i); // O como recorras los buckets de tu TablaHash
+            if (obj instanceof Nodo) {
+                Nodo nodoActual = (Nodo) obj;
+                while (nodoActual != null) {
+                    Estacion est = nodoActual.getEstacion();
+                    if (est != null) {
+                        est.setDistancia(Integer.MAX_VALUE);
+                        est.setVisitado(false);
+                        est.setPredecesor(null);
+                    }
+                    nodoActual = nodoActual.getNext();
+                }
+            } else if (obj instanceof Estacion) {
+                Estacion est = (Estacion) obj;
+                est.setDistancia(Integer.MAX_VALUE);
+                est.setVisitado(false);
+                est.setPredecesor(null);
+            }
+        }
+
+        // La distancia al origen es 0
+        ((Estacion)estacion_origen).setDistancia(0);
+
+        // 3. BUCLE PRINCIPAL DE DIJKSTRA (Búsqueda secuencial O(V^2) sin colas de prioridad externas)
+        boolean continuar = true;
+        while (continuar) {
+            Estacion estacionActual = null;
+            int menorDistancia = Integer.MAX_VALUE;
+
+            // Buscar la estación NO VISITADA con la menor distancia acumulada recorriendo toda la tabla hash
+            for (int i = 0; i < buckets.length; i++) {
+                Object obj = hashTable.getValue(i);
+                if (obj instanceof Nodo) {
+                    Nodo nodoActual = (Nodo) obj;
+                    while (nodoActual != null) {
+                        Estacion est = nodoActual.getEstacion();
+                        if (est != null && !est.isVisitado() && est.getDistancia() < menorDistancia) {
+                            menorDistancia = est.getDistancia();
+                            estacionActual = est;
+                        }
+                        nodoActual = nodoActual.getNext();
+                    }
+                } else if (obj instanceof Estacion) {
+                    Estacion est = (Estacion) obj;
+                    if (!est.isVisitado() && est.getDistancia() < menorDistancia) {
+                        menorDistancia = est.getDistancia();
+                        estacionActual = est;
+                    }
+                }
+            }
+
+            // Si no encontramos nodo con distancia finita o ya llegamos a estaciones inalcanzables, salimos
+            if (estacionActual == null || menorDistancia == Integer.MAX_VALUE) {
+                break;
+            }
+
+            // Si llegamos al destino, podemos detener el algoritmo antes de tiempo
+            if (estacionActual.equals(((Estacion)estacion_destino))) {
+                break;
+            }
+
+            estacionActual.setVisitado(true);
+
+            // 4. RELAJACIÓN DE ARISTAS (Recorrer los adyacentes de la estación actual)
+            NodoAdyacente adyacente = estacionActual.getPrimerAdyacente();
+            while (adyacente != null) {
+                Estacion vecino = adyacente.getEstacionDestino();
+                int pesoArista = adyacente.getTiempo_Minutos();
+
+                if (!vecino.isVisitado()) {
+                    int nuevaDistancia = estacionActual.getDistancia() + pesoArista;
+                    if (nuevaDistancia < vecino.getDistancia()) {
+                        vecino.setDistancia(nuevaDistancia);
+                        vecino.setPredecesor(estacionActual);
+                    }
+                }
+                adyacente = adyacente.getSiguienteAdyacente(); // O .getNext() según tu implementación
+            }
+        }
+
+        // 5. RECONSTRUCCIÓN DEL CAMINO Y RESULTADOS
+        if (((Estacion)estacion_destino).getDistancia() == Integer.MAX_VALUE) {
+            javax.swing.JOptionPane.showMessageDialog(null, "No existe una ruta posible entre " + origenStr + " y " + destinoStr + ".", "Sin ruta", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return texto;
+        }
+
+        // Reconstruir el camino hacia atrás usando los predecesores
+        StringBuilder rutaConstruida = new StringBuilder();
+        Estacion paso = ((Estacion)estacion_destino);
+
+        // Como invertiremos el camino, podemos guardarlo en una lista propia o un array estático, 
+        // o usar un StringBuilder y un enfoque simple:
+        String caminoTexto = "";
+        while (paso != null) {
+            caminoTexto = paso.getID_Estacion() + (caminoTexto.isEmpty() ? "" : " <- " + caminoTexto);
+            paso = paso.getPredecesor();
+        }
+
+        // Mostrar el resultado en el JTextArea de tu interfaz
+        String resultadoFinal = "=== RUTA ÓPTIMA (DIJKSTRA) ===\n" +
+                                "Origen: " + origenStr + "\n" +
+                                "Destino: " + destinoStr + "\n" +
+                                "Tiempo total estimado: " + ((Estacion)estacion_destino).getDistancia() + " minutos\n\n" +
+                                "Recorrido:\n" + caminoTexto;
+
+        return resultadoFinal;
+    }
+    
+    public String ejecutarDFS(String origenStr, TablaHash hashTable) {
+        // 1. Validar que exista la estación de origen
+        String texto = "";
+        Estacion estacionOrigen = null;
+        int key = hashTable.getHashCode(origenStr.trim());
+        Object obj = hashTable.getValue(key);
+
+        if (obj instanceof Nodo) {
+            estacionOrigen = hashTable.buscarEstacionEncadenada((Nodo) obj, origenStr.trim());
+        } else if (obj instanceof Estacion) {
+            if (((Estacion) obj).getID_Estacion().equalsIgnoreCase(origenStr.trim())) {
+                estacionOrigen = (Estacion) obj;
+            }
+        }
+
+        if (estacionOrigen == null) {
+            javax.swing.JOptionPane.showMessageDialog(null, "La estación de origen no existe.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return texto;
+        }
+
+        // 2. Resetear el estado 'visitado' en toda la tabla hash antes de empezar
+        Object[] buckets = hashTable.getHashTable();
+        for (int i = 0; i < buckets.length; i++) {
+            Object bucketObj = hashTable.getValue(i);
+            if (bucketObj instanceof Nodo) {
+                Nodo nodoActual = (Nodo) bucketObj;
+                while (nodoActual != null) {
+                    if (nodoActual.getEstacion() != null) {
+                        nodoActual.getEstacion().setVisitado(false);
+                    }
+                    nodoActual = nodoActual.getNext();
+                }
+            } else if (bucketObj instanceof Estacion) {
+                ((Estacion) bucketObj).setVisitado(false);
+            }
+        }
+
+        // 3. Iniciar el recorrido DFS recursivo y acumular el texto
+        StringBuilder resultado = new StringBuilder("=== RECORRIDO DFS (PROFUNDIDAD) ===\n");
+        recorridoDFS(estacionOrigen, resultado);
+
+        texto = resultado.toString();
+        return texto;
+    }
+
+    // Método auxiliar recursivo para el DFS
+    private void recorridoDFS(Estacion estacion, StringBuilder sb) {
+        estacion.setVisitado(true);
+        sb.append("Estación visitada: ").append(estacion.getID_Estacion()).append("\n");
+
+        NodoAdyacente adyacente = estacion.getPrimerAdyacente();
+        while (adyacente != null) {
+            Estacion vecino = adyacente.getEstacionDestino();
+            if (vecino != null && !vecino.isVisitado()) {
+                recorridoDFS(vecino, sb);
+            }
+            adyacente = adyacente.getSiguienteAdyacente(); // O .getNext() según tu clase
+        }
+    }
 }
    

@@ -49,6 +49,10 @@ public class GUI1 extends javax.swing.JFrame {
         jLabelGuardadoAuto = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jTextFieldDFS_Dijkstra = new javax.swing.JTextField();
+        jButton9 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,34 +71,49 @@ public class GUI1 extends javax.swing.JFrame {
 
         jButton1.setText("imprimir tabla hash");
         jButton1.addActionListener(this::jButton1ActionPerformed);
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 10, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 20, -1, -1));
 
         loadgrafo.setText("cargar Grafo");
         loadgrafo.setToolTipText("");
         loadgrafo.addActionListener(this::loadgrafoActionPerformed);
-        jPanel1.add(loadgrafo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
+        jPanel1.add(loadgrafo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
 
         jButton2.setText("mostrar grafo");
         jButton2.setToolTipText("");
         jButton2.addActionListener(this::jButton2ActionPerformed);
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 50, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 20, -1, -1));
 
         jButton3.setText("eliminar estacion");
         jButton3.addActionListener(this::jButton3ActionPerformed);
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 260, 140, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 160, -1));
 
         jButton4.setText("guardar datos");
         jButton4.addActionListener(this::jButton4ActionPerformed);
-        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
         jPanel1.add(jLabelGuardadoAuto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 570, -1, -1));
 
         jButton5.setText("agregar estacion");
         jButton5.addActionListener(this::jButton5ActionPerformed);
-        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 140, -1));
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, 140, -1));
 
         jButton6.setText("conectar estaciones");
         jButton6.addActionListener(this::jButton6ActionPerformed);
-        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, -1, -1));
+        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, -1, -1));
+
+        jButton7.setText("Eliminar Conexiones");
+        jButton7.addActionListener(this::jButton7ActionPerformed);
+        jPanel1.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, -1, -1));
+
+        jButton8.setText("Utilizar Dijkstra");
+        jButton8.addActionListener(this::jButton8ActionPerformed);
+        jPanel1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 70, -1, -1));
+
+        jTextFieldDFS_Dijkstra.addActionListener(this::jTextFieldDFS_DijkstraActionPerformed);
+        jPanel1.add(jTextFieldDFS_Dijkstra, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 110, 140, 40));
+
+        jButton9.setText("Utilizar DFS");
+        jButton9.addActionListener(this::jButton9ActionPerformed);
+        jPanel1.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 130, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -191,8 +210,13 @@ public class GUI1 extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        EliminarEstacion dialog = new EliminarEstacion(this, true, this);
-        dialog.setVisible(true); // Muestra la ventana emergente
+        jLabelGuardadoAuto.setText("");
+        if (archivoMaestro != null){    
+            EliminarEstacion dialog = new EliminarEstacion(this, true, this);
+            dialog.setVisible(true); // Muestra la ventana emergente
+        } else {
+            jTextArea1.setText("No se ha cargado el archivo de Estacion");
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -214,16 +238,78 @@ public class GUI1 extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
         jLabelGuardadoAuto.setText("");
-        AgregarEstacion dialog = new AgregarEstacion(this, true, this);
-        dialog.setVisible(true); // Muestra la ventana emergente
+        if (archivoMaestro != null){    
+            AgregarEstacion dialog = new AgregarEstacion(this, true, this);
+            dialog.setVisible(true); // Muestra la ventana emergente
+        } else {
+            jTextArea1.setText("No se ha cargado el archivo de Estacion");
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
         jLabelGuardadoAuto.setText("");
-        ConectarEstacion dialog = new ConectarEstacion(this, true, this);
-        dialog.setVisible(true); // Muestra la ventana emergente
+        if (archivoGrafo != null){    
+            ConectarEstacion dialog = new ConectarEstacion(this, true, this);
+            dialog.setVisible(true); // Muestra la ventana emergente
+        } else {
+            jTextArea1.setText("No se ha cargado el archivo de Grafo");
+        }
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        jLabelGuardadoAuto.setText("");
+        if (archivoGrafo != null){    
+            EliminarConexion dialog = new EliminarConexion(this, true, this);
+            dialog.setVisible(true); // Muestra la ventana emergente
+        } else {
+            jTextArea1.setText("No se ha cargado el archivo de Grafo");
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        String texto = "";
+        String input = jTextFieldDFS_Dijkstra.getText();
+        String[] datos = input.toUpperCase().split(",");
+        if (input.equals("") || datos.length != 2) {
+            jTextArea1.setText("ingrese estaciones validas");
+        } else if (archivoMaestro == null) {
+            jTextArea1.setText("No se ha cargado el archivo estacion");
+        }else {
+            datos[0] = datos[0].trim();
+            datos[1] = datos[1].trim();
+            texto = g.ejecutarDijkstra(datos[0], datos[1], hashTable);
+            if (texto.equals("")) {
+                jTextArea1.setText("error");
+                
+            }
+            jTextArea1.setText(texto);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        String texto = "";
+        String input = jTextFieldDFS_Dijkstra.getText().toUpperCase();
+        if (input.equals("")) {
+            jTextArea1.setText("ingrese una estacion valida");
+        } else if (archivoMaestro == null) {
+            jTextArea1.setText("No se ha cargado el archivo estacion");
+        }else {
+            texto = g.ejecutarDFS(input, hashTable);
+            if (texto.equals("")) {
+                jTextArea1.setText("error");
+                
+            }
+            jTextArea1.setText(texto);
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jTextFieldDFS_DijkstraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDFS_DijkstraActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldDFS_DijkstraActionPerformed
 
     /**
      * @param args the command line arguments
@@ -257,10 +343,14 @@ public class GUI1 extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     javax.swing.JLabel jLabelGuardadoAuto;
     private javax.swing.JPanel jPanel1;
     javax.swing.JScrollPane jScrollPane1;
     javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextFieldDFS_Dijkstra;
     private javax.swing.JButton loadEstaciones;
     private javax.swing.JButton loadgrafo;
     // End of variables declaration//GEN-END:variables
